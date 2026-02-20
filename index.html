@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Margin — A Professional Writing Blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0e;
+    --surface: #141416;
+    --surface2: #1c1c1f;
+    --border: #2a2a2d;
+    --accent: #c9a96e;
+    --accent2: #e8d5b0;
+    --text: #e2ddd5;
+    --muted: #8a857d;
+    --red: #c4614a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', serif;
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,13,14,0.92);
+    backdrop-filter: blur(12px);
+  }
+  .header-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-style: italic;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  nav { display: flex; gap: 2rem; align-items: center; }
+  nav button {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0;
+  }
+  nav button:hover, nav button.active { color: var(--accent); }
+  .page { display: none; }
+  .page.active { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 5rem 2rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .hero h1 em { color: var(--accent); font-style: italic; }
+  .hero-desc { color: var(--muted); font-size: 1rem; margin-top: 1.5rem; line-height: 1.8; }
+  .hero-right { border-left: 1px solid var(--border); padding-left: 4rem; }
+  .featured-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+  .featured-post-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+  .featured-post-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+    color: var(--text);
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    text-align: left;
+    display: block;
+    width: 100%;
+  }
+  .featured-post-title:hover { color: var(--accent); }
+  .featured-post-excerpt { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
+  .featured-post-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    display: flex;
+    gap: 1rem;
+  }
+  .search-wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 2rem 2.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    padding: 0.75rem 1.2rem;
+    outline: none;
+    transition: border-color 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+  .category-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .filter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+  .posts-section { max-width: 1140px; margin: 0 auto; padding: 0 2rem 5rem; }
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+  }
+  .post-card {
+    background: var(--bg);
+    padding: 2rem;
+    cursor: pointer;
+    transition: background 0.25s;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    text-align: left;
+    color: inherit;
+    font-family: inherit;
+    display: block;
+    width: 100%;
+  }
+  .post-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .post-card:hover { background: var(--surface); }
+  .post-card:hover::after { transform: scaleX(1); }
+  .post-card-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+  .post-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin-bottom: 0.8rem;
+    color: var(--text);
+  }
+  .post-card-excerpt { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
+  .post-card-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    display: flex;
+    gap: 1rem;
+  }
+  .post-page { max-width: 720px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+  .post-back {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+  }
+  .post-back:hover { color: var(--accent); }
+  .post-full-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .post-full-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+  .post-full-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 1.5rem;
+  }
+  .post-full-body { font-size: 1.05rem; line-height: 1.85; color: #cec9c1; }
+  .post-full-body p { margin-bottom: 1.5rem; }
+  .post-full-body h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    margin: 2.5rem 0 1rem;
+  }
+  .post-full-body blockquote {
+    border-left: 2px solid var(--accent);
+    margin: 2rem 0;
+    padding: 0.5rem 1.5rem;
+    font-style: italic;
+    color: var(--accent2);
+  }
+  .about-page {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 5rem;
+  }
+  .about-sidebar h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .about-sidebar .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .about-content p { margin-bottom: 1.4rem; color: #cec9c1; font-size: 1.02rem; }
+  .about-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    margin: 2.5rem 0 1rem;
+  }
+  .contact-section { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--border); }
+  .contact-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .contact-desc { color: var(--muted); font-size: 0.92rem; margin-bottom: 2rem; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    padding: 0.85rem 1.1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .form-group select { font-family: 'DM Mono', monospace; font-size: 0.85rem; }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--accent); }
+  .btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    border: none;
+    color: var(--bg);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn:hover { background: var(--accent2); transform: translateY(-1px); }
+  .form-success {
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    padding: 1rem 1.5rem;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    margin-top: 1rem;
+  }
+  .newsletter-bar {
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    margin-bottom: 3rem;
+  }
+  .newsletter-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+  .newsletter-text h4 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--text); margin-bottom: 0.25rem; }
+  .newsletter-text p { font-size: 0.85rem; color: var(--muted); }
+  .newsletter-form { display: flex; flex: 1; max-width: 480px; }
+  .newsletter-form input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.75rem 1.1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .newsletter-form input:focus { border-color: var(--accent); }
+  .newsletter-form input::placeholder { color: var(--muted); }
+  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; }
+  footer p { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+  footer span { color: var(--accent); }
+  .admin-toggle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.45rem 0.9rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .admin-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .admin-panel {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+  .admin-panel.open { display: flex; animation: fadeUp 0.3s ease; }
+  .admin-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 680px;
+    padding: 2.5rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  .admin-box h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--text); margin-bottom: 0.4rem; }
+  .admin-box .sub { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 2rem; }
+  .admin-close {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    background: none; border: none;
+    color: var(--muted);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+  }
+  .admin-close:hover { color: var(--text); }
+  .existing-posts { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .existing-posts h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .admin-post-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    gap: 1rem;
+  }
+  .admin-post-item span { color: var(--text); }
+  .admin-post-item small { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); letter-spacing: 0.06em; display: block; }
+  .delete-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .delete-btn:hover { border-color: var(--red); color: var(--red); }
+  #noResults { display: none; text-align: center; padding: 3rem 0; font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-right { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 2rem; }
+    .posts-grid { grid-template-columns: 1fr; }
+    .about-page { grid-template-columns: 1fr; gap: 2rem; }
+    .newsletter-inner { flex-direction: column; gap: 1.5rem; }
+    .newsletter-form { max-width: 100%; }
+    nav { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <button class="logo" id="navLogo">The Margin</button>
+    <nav>
+      <button id="navWriting" class="active">Writing</button>
+      <button id="navAbout">About</button>
+      <button class="admin-toggle" id="adminToggle">+ New Post</button>
+    </nav>
+  </div>
+</header>
+
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow">Professional Writing &amp; Craft</div>
+      <h1>Words that <em>cut through</em> the noise.</h1>
+      <p class="hero-desc">Essays, craft notes, and observations on writing, editing, and the professional pursuit of language done well.</p>
+    </div>
+    <div class="hero-right">
+      <div class="featured-label">Latest Issue</div>
+      <div class="featured-post-category" id="featuredCat"></div>
+      <button class="featured-post-title" id="featuredTitle"></button>
+      <div class="featured-post-excerpt" id="featuredExcerpt"></div>
+      <div class="featured-post-meta" id="featuredMeta"></div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" type="text" placeholder="Search posts…" id="searchInput">
+    <div class="category-filters" id="categoryFilters">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="Craft">Craft</button>
+      <button class="filter-btn" data-cat="Industry">Industry</button>
+      <button class="filter-btn" data-cat="Process">Process</button>
+      <button class="filter-btn" data-cat="Essays">Essays</button>
+    </div>
+  </div>
+  <div class="posts-section">
+    <div class="posts-grid" id="postsGrid"></div>
+    <div id="noResults">No posts found</div>
+  </div>
+  <div class="newsletter-bar">
+    <div class="newsletter-inner">
+      <div class="newsletter-text">
+        <h4>Stay in the margins.</h4>
+        <p>New essays delivered to your inbox, no noise.</p>
+      </div>
+      <form class="newsletter-form" id="newsletterForm">
+        <input type="email" placeholder="your@email.com" required id="nlEmail">
+        <button type="submit" class="btn">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-post">
+  <div class="post-page">
+    <button class="post-back" id="postBack">&#8592; Back to all posts</button>
+    <div class="post-full-category" id="postCat"></div>
+    <h1 class="post-full-title" id="postTitle"></h1>
+    <div class="post-full-meta"><span id="postDate"></span><span id="postRead"></span></div>
+    <div class="post-full-body" id="postBody"></div>
+  </div>
+</div>
+
+<div class="page" id="page-about">
+  <div class="about-page">
+    <div class="about-sidebar">
+      <div class="eyebrow">About this blog</div>
+      <h2>Writing at the edge of thought.</h2>
+    </div>
+    <div class="about-content">
+      <p>Welcome to <em>The Margin</em> — a space for serious thinking about the written word. Here you'll find essays on craft, meditations on the writing life, and honest dispatches from the professional trenches of language.</p>
+      <p>I write about editing, voice, structure, and the invisible architecture beneath good prose. Whether you're a working writer, editor, or someone who cares deeply about how ideas take shape in sentences, this blog is for you.</p>
+      <h3>What you'll find here</h3>
+      <p>Essays on the craft of writing published regularly. Occasional interviews with editors, authors, and journalists. Honest assessments of the publishing industry. And always — close readings of sentences that deserve it.</p>
+      <div class="contact-section">
+        <h3>Get in touch</h3>
+        <p class="contact-desc">For pitches, questions, or reader mail. I read everything.</p>
+        <form id="contactForm">
+          <div class="form-group"><label>Name</label><input type="text" placeholder="Your name" required></div>
+          <div class="form-group"><label>Email</label><input type="email" placeholder="your@email.com" required></div>
+          <div class="form-group"><label>Message</label><textarea rows="5" placeholder="What's on your mind?" required></textarea></div>
+          <button type="submit" class="btn">Send Message</button>
+          <div class="form-success" id="contactSuccess">&#10003; Message sent. I'll be in touch.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-box">
+    <button class="admin-close" id="adminClose">&#215;</button>
+    <h2>New Post</h2>
+    <p class="sub">Publish to your blog instantly.</p>
+    <form id="newPostForm">
+      <div class="form-group"><label>Title</label><input type="text" id="newTitle" placeholder="Post title…" required></div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="newCategory">
+          <option>Craft</option><option>Industry</option><option>Process</option><option>Essays</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Excerpt</label><textarea id="newExcerpt" rows="2" placeholder="A short summary for the card…" required></textarea></div>
+      <div class="form-group"><label>Body (HTML supported)</label><textarea id="newBody" rows="8" placeholder="Write your post here. You can use &lt;p&gt;, &lt;h2&gt;, &lt;blockquote&gt; tags…" required></textarea></div>
+      <div class="form-group"><label>Read time</label><input type="text" id="newRead" value="5 min read"></div>
+      <button type="submit" class="btn">Publish Post</button>
+    </form>
+    <div class="existing-posts">
+      <h3>Manage Posts</h3>
+      <div id="adminPostList"></div>
+    </div>
+  </div>
+</div>
+
+<footer><p>&copy; 2024 <span>The Margin</span> &mdash; Writing that holds.</p></footer>
+
+<script>
+(function () {
+  var posts = [
+    { id:1, category:'Craft', title:'The Sentence That Changed Everything', excerpt:'On the day I rewrote a single sentence forty-seven times, I finally understood what it meant to edit without mercy and write with complete intention.', body:'<p>There\'s a sentence I return to every time I sit down to edit someone else\'s work. It belongs to a client whose name I won\'t share, from a business report about supply chain logistics. But it taught me everything.</p><p>The original read: <em>"Due to the fact that the system was experiencing issues of a technical nature, deliveries were delayed."</em></p><blockquote>Good writing is not about sounding smart. It is about being understood.</blockquote><h2>The Mechanics of Clarity</h2><p>We spent three hours on that one sentence. Not because the writer was bad — but because clarity is hard, and vagueness is seductive. It feels professional to hedge. It feels safe to bury the verb.</p><p>The sentence we ended with: <em>"Technical failures delayed deliveries."</em> Four words. Same meaning. All the weight, none of the fog.</p>', date:'Dec 12, 2024', read:'8 min read' },
+    { id:2, category:'Industry', title:'The Quiet Death of the Staff Writer', excerpt:'Publications aren\'t just cutting editorial teams — they\'re dismantling the institutional knowledge that makes good journalism possible.', body:'<p>Another week, another round of layoffs. Experienced reporters, editors with decades of institutional knowledge, fact-checkers who remember things the internet has forgotten — gone.</p><p>What replaces them? Algorithms, generalists, and the belief that content is fungible.</p><h2>What\'s Actually Being Lost</h2><p>We talk about editorial layoffs in terms of economics. But they obscure what\'s actually being lost: the accumulation of judgment.</p><blockquote>A good editor doesn\'t just fix sentences. They remember what was said last quarter, who contradicted whom, what the record actually shows.</blockquote><p>That knowledge doesn\'t live in a database. It lives in people. And once those people are gone, it\'s gone with them.</p>', date:'Nov 28, 2024', read:'6 min read' },
+    { id:3, category:'Process', title:'Writing in Batches: A System That Actually Works', excerpt:'Forget the daily word count. The most productive professional writers I know don\'t write every day — they write in concentrated bursts.', body:'<p>Every writing advice column tells you the same thing: write every day. Build the habit. Show up.</p><p>I did this for three years. And I produced more mediocre work, more consistently, than at any other point in my career.</p><h2>The Case for Batch Writing</h2><p>What changed everything was talking to a journalist who had filed more long-form pieces in five years than I had in ten. Her method: three days a week, nothing but writing, from 7am to 1pm, phone off, door closed.</p><blockquote>You don\'t build the muscle of writing by touching it every day. You build it by lifting heavy, then resting.</blockquote>', date:'Nov 14, 2024', read:'5 min read' },
+    { id:4, category:'Essays', title:'On Writing Badly on Purpose', excerpt:'The first draft isn\'t supposed to be good. But somewhere along the way, we forgot that permission — and it\'s killing our work.', body:'<p>There\'s a version of writing advice that has genuinely harmed an entire generation of writers: your first draft should be free, wild, unedited. Good advice. But most people don\'t follow it.</p><h2>The Critic in the Room</h2><p>Somewhere between intention and execution, the internal critic sneaks in. We write a sentence, wince, rewrite it before moving on.</p><blockquote>The blank page isn\'t writer\'s block. It\'s the fear of being caught in the act of not knowing.</blockquote><p>Write the version you\'d be embarrassed to show anyone. The draft that exists is infinitely more useful than the perfect draft you\'re protecting in your head.</p>', date:'Oct 30, 2024', read:'7 min read' },
+    { id:5, category:'Craft', title:'Voice Is Not Style', excerpt:'Style is what you do with words. Voice is what you can\'t help doing — and learning to tell the difference is one of writing\'s hardest lessons.', body:'<p>I\'ve worked with writers who produced immaculate sentences whose work was somehow airless. Technically flawless and utterly anonymous.</p><p>And I\'ve worked with writers whose grammar was frequently wrong, whose work I\'d recognize from a hundred yards.</p><h2>Where Voice Lives</h2><p>Voice lives in the choices you make when you\'re not thinking about craft. It lives in what you notice, what you find worth saying.</p><blockquote>Style is a costume. Voice is a skeleton. You can change one. You\'re stuck with the other.</blockquote>', date:'Oct 15, 2024', read:'6 min read' },
+    { id:6, category:'Industry', title:'What Clients Don\'t Know About Writers', excerpt:'After a decade of freelance work, here are the things I wish every client understood before the engagement began.', body:'<p>I\'ve been freelancing long enough to have had the same conversation many times with clients who mean well and don\'t quite understand what they\'re buying.</p><h2>Time Is the Product</h2><p>When you hire a writer, you\'re hiring focused attention. That attention is rare, finite, and easily destroyed.</p><blockquote>Writing isn\'t what happens at the keyboard. It\'s what happens in the hours when nothing visible is being produced.</blockquote><h2>Revision Is Part of the Work</h2><p>The first draft is not the deliverable. It\'s the beginning of a conversation. "This isn\'t quite right" is not actionable. "The tone here is too casual for our audience" is.</p>', date:'Sep 22, 2024', read:'9 min read' }
+  ];
+
+  var currentCategory = 'all';
+
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
+    var el = document.getElementById('page-' + name);
+    if (el) el.classList.add('active');
+    document.getElementById('navWriting').classList.toggle('active', name === 'home' || name === 'post');
+    document.getElementById('navAbout').classList.toggle('active', name === 'about');
+    window.scrollTo(0, 0);
+  }
+
+  function openPost(idx) {
+    var post = posts[idx];
+    document.getElementById('postCat').textContent = post.category;
+    document.getElementById('postTitle').textContent = post.title;
+    document.getElementById('postDate').textContent = post.date;
+    document.getElementById('postRead').textContent = post.read;
+    document.getElementById('postBody').innerHTML = post.body;
+    showPage('post');
+  }
+
+  function updateFeatured() {
+    if (!posts.length) return;
+    var p = posts[0];
+    document.getElementById('featuredCat').textContent = p.category;
+    document.getElementById('featuredTitle').textContent = p.title;
+    document.getElementById('featuredExcerpt').textContent = p.excerpt;
+    document.getElementById('featuredMeta').innerHTML = '<span>' + p.date + '</span><span>' + p.read + '</span>';
+  }
+
+  function renderGrid() {
+    var grid = document.getElementById('postsGrid');
+    grid.innerHTML = '';
+    var search = document.getElementById('searchInput').value.toLowerCase();
+    var visible = 0;
+
+    posts.forEach(function (post, i) {
+      var matchCat = currentCategory === 'all' || post.category === currentCategory;
+      var matchSearch = !search || post.title.toLowerCase().indexOf(search) !== -1 || post.excerpt.toLowerCase().indexOf(search) !== -1;
+      if (!matchCat || !matchSearch) return;
+      visible++;
+      var card = document.createElement('button');
+      card.className = 'post-card';
+      card.innerHTML =
+        '<div class="post-card-category">' + post.category + '</div>' +
+        '<div class="post-card-title">' + post.title + '</div>' +
+        '<div class="post-card-excerpt">' + post.excerpt + '</div>' +
+        '<div class="post-card-meta"><span>' + post.date + '</span><span>' + post.read + '</span></div>';
+      card.addEventListener('click', (function (idx) { return function () { openPost(idx); }; })(i));
+      grid.appendChild(card);
+    });
+
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+    updateFeatured();
+  }
+
+  function renderAdminList() {
+    var list = document.getElementById('adminPostList');
+    list.innerHTML = '';
+    if (!posts.length) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No posts yet.</p>'; return; }
+    posts.forEach(function (post, i) {
+      var item = document.createElement('div');
+      item.className = 'admin-post-item';
+      var info = document.createElement('div');
+      info.innerHTML = '<span>' + post.title + '</span><small>' + post.category + ' &middot; ' + post.date + '</small>';
+      var del = document.createElement('button');
+      del.className = 'delete-btn';
+      del.textContent = 'Delete';
+      del.addEventListener('click', (function (idx) {
+        return function () {
+          if (confirm('Delete "' + posts[idx].title + '"?')) {
+            posts.splice(idx, 1);
+            renderGrid();
+            renderAdminList();
+          }
+        };
+      })(i));
+      item.appendChild(info);
+      item.appendChild(del);
+      list.appendChild(item);
+    });
+  }
+
+  // Nav
+  document.getElementById('navLogo').addEventListener('click', function () { showPage('home'); });
+  document.getElementById('navWriting').addEventListener('click', function () { showPage('home'); });
+  document.getElementById('navAbout').addEventListener('click', function () { showPage('about'); });
+  document.getElementById('postBack').addEventListener('click', function () { showPage('home'); });
+  document.getElementById('featuredTitle').addEventListener('click', function () { openPost(0); });
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', function () { renderGrid(); });
+
+  // Category filters
+  document.getElementById('categoryFilters').addEventListener('click', function (e) {
+    var btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    currentCategory = btn.getAttribute('data-cat');
+    document.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderGrid();
+  });
+
+  // Admin
+  document.getElementById('adminToggle').addEventListener('click', function () {
+    document.getElementById('adminPanel').classList.add('open');
+    renderAdminList();
+  });
+  document.getElementById('adminClose').addEventListener('click', function () {
+    document.getElementById('adminPanel').classList.remove('open');
+  });
+  document.getElementById('adminPanel').addEventListener('click', function (e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+
+  document.getElementById('newPostForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var title = document.getElementById('newTitle').value.trim();
+    var category = document.getElementById('newCategory').value;
+    var excerpt = document.getElementById('newExcerpt').value.trim();
+    var rawBody = document.getElementById('newBody').value.trim();
+    var read = document.getElementById('newRead').value.trim() || '5 min read';
+    var date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    var bodyHtml = rawBody.indexOf('<') !== -1 ? rawBody : rawBody.split(/\n\n+/).map(function (p) { return '<p>' + p + '</p>'; }).join('');
+    posts.unshift({ id: Date.now(), category: category, title: title, excerpt: excerpt, body: bodyHtml, date: date, read: read });
+    e.target.reset();
+    document.getElementById('newRead').value = '5 min read';
+    renderGrid();
+    renderAdminList();
+    alert('Post published!');
+  });
+
+  // Newsletter
+  document.getElementById('newsletterForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    alert('Subscribed! Welcome to The Margin.');
+    document.getElementById('nlEmail').value = '';
+  });
+
+  // Contact
+  document.getElementById('contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var s = document.getElementById('contactSuccess');
+    s.style.display = 'block';
+    e.target.reset();
+    setTimeout(function () { s.style.display = 'none'; }, 4000);
+  });
+
+  renderGrid();
+})();
+</script>
+</body>
+</html>
