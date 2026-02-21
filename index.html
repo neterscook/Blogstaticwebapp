@@ -3,624 +3,1148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Margin — A Professional Writing Blog</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<title>Folio — Static Site Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0d0e;
-    --surface: #141416;
-    --surface2: #1c1c1f;
-    --border: #2a2a2d;
-    --accent: #c9a96e;
-    --accent2: #e8d5b0;
-    --text: #e2ddd5;
-    --muted: #8a857d;
-    --red: #c4614a;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Lora', serif;
-    font-size: 17px;
-    line-height: 1.75;
-    min-height: 100vh;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.6;
-  }
-  header {
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(13,13,14,0.92);
-    backdrop-filter: blur(12px);
-  }
-  .header-inner {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.35rem;
-    font-style: italic;
-    color: var(--accent);
-    letter-spacing: 0.02em;
-    cursor: pointer;
-    background: none;
-    border: none;
-  }
-  nav { display: flex; gap: 2rem; align-items: center; }
-  nav button {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.2s;
-    padding: 0;
-  }
-  nav button:hover, nav button.active { color: var(--accent); }
-  .page { display: none; }
-  .page.active { display: block; animation: fadeUp 0.4s ease; }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .hero {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 5rem 2rem 3rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: end;
-  }
-  .hero-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-  }
-  .hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.8rem, 5vw, 4.5rem);
-    line-height: 1.1;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .hero h1 em { color: var(--accent); font-style: italic; }
-  .hero-desc { color: var(--muted); font-size: 1rem; margin-top: 1.5rem; line-height: 1.8; }
-  .hero-right { border-left: 1px solid var(--border); padding-left: 4rem; }
-  .featured-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1.2rem;
-  }
-  .featured-post-category {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.8rem;
-  }
-  .featured-post-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.35rem;
-    line-height: 1.3;
-    margin-bottom: 0.8rem;
-    cursor: pointer;
-    color: var(--text);
-    transition: color 0.2s;
-    background: none;
-    border: none;
-    text-align: left;
-    display: block;
-    width: 100%;
-  }
-  .featured-post-title:hover { color: var(--accent); }
-  .featured-post-excerpt { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
-  .featured-post-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    display: flex;
-    gap: 1rem;
-  }
-  .search-wrap {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 2rem 2.5rem;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .search-input {
-    flex: 1;
-    min-width: 200px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.82rem;
-    padding: 0.75rem 1.2rem;
-    outline: none;
-    transition: border-color 0.2s;
-    letter-spacing: 0.04em;
-  }
-  .search-input:focus { border-color: var(--accent); }
-  .search-input::placeholder { color: var(--muted); }
-  .category-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .filter-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.5rem 1rem;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .filter-btn:hover, .filter-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--bg);
-  }
-  .posts-section { max-width: 1140px; margin: 0 auto; padding: 0 2rem 5rem; }
-  .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5px;
-    background: var(--border);
-  }
-  .post-card {
-    background: var(--bg);
-    padding: 2rem;
-    cursor: pointer;
-    transition: background 0.25s;
-    position: relative;
-    overflow: hidden;
-    border: none;
-    text-align: left;
-    color: inherit;
-    font-family: inherit;
-    display: block;
-    width: 100%;
-  }
-  .post-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-  }
-  .post-card:hover { background: var(--surface); }
-  .post-card:hover::after { transform: scaleX(1); }
-  .post-card-category {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.8rem;
-  }
-  .post-card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    line-height: 1.3;
-    margin-bottom: 0.8rem;
-    color: var(--text);
-  }
-  .post-card-excerpt { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
-  .post-card-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    display: flex;
-    gap: 1rem;
-  }
-  .post-page { max-width: 720px; margin: 0 auto; padding: 4rem 2rem 6rem; }
-  .post-back {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 3rem;
-    transition: color 0.2s;
-    background: none;
-    border: none;
-  }
-  .post-back:hover { color: var(--accent); }
-  .post-full-category {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-  }
-  .post-full-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    line-height: 1.15;
-    color: var(--text);
-    margin-bottom: 1.5rem;
-  }
-  .post-full-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    gap: 1.5rem;
-  }
-  .post-full-body { font-size: 1.05rem; line-height: 1.85; color: #cec9c1; }
-  .post-full-body p { margin-bottom: 1.5rem; }
-  .post-full-body h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    color: var(--text);
-    margin: 2.5rem 0 1rem;
-  }
-  .post-full-body blockquote {
-    border-left: 2px solid var(--accent);
-    margin: 2rem 0;
-    padding: 0.5rem 1.5rem;
-    font-style: italic;
-    color: var(--accent2);
-  }
-  .about-page {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 5rem 2rem;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 5rem;
-  }
-  .about-sidebar h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
-    font-style: italic;
-    color: var(--accent);
-    line-height: 1.2;
-  }
-  .about-sidebar .eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-  .about-content p { margin-bottom: 1.4rem; color: #cec9c1; font-size: 1.02rem; }
-  .about-content h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    color: var(--text);
-    margin: 2.5rem 0 1rem;
-  }
-  .contact-section { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--border); }
-  .contact-section h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
-  .contact-desc { color: var(--muted); font-size: 0.92rem; margin-bottom: 2rem; }
-  .form-group { margin-bottom: 1.2rem; }
-  .form-group label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'Lora', serif;
-    font-size: 0.95rem;
-    padding: 0.85rem 1.1rem;
-    outline: none;
-    transition: border-color 0.2s;
-    resize: vertical;
-  }
-  .form-group select { font-family: 'DM Mono', monospace; font-size: 0.85rem; }
-  .form-group input:focus,
-  .form-group textarea:focus,
-  .form-group select:focus { border-color: var(--accent); }
-  .btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 0.85rem 2rem;
-    background: var(--accent);
-    border: none;
-    color: var(--bg);
-    cursor: pointer;
-    transition: background 0.2s, transform 0.15s;
-  }
-  .btn:hover { background: var(--accent2); transform: translateY(-1px); }
-  .form-success {
-    display: none;
-    background: var(--surface2);
-    border: 1px solid var(--accent);
-    padding: 1rem 1.5rem;
-    color: var(--accent);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.06em;
-    margin-top: 1rem;
-  }
-  .newsletter-bar {
-    background: var(--surface2);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 2.5rem 2rem;
-    margin-bottom: 3rem;
-  }
-  .newsletter-inner {
-    max-width: 1140px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 3rem;
-    flex-wrap: wrap;
-  }
-  .newsletter-text h4 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--text); margin-bottom: 0.25rem; }
-  .newsletter-text p { font-size: 0.85rem; color: var(--muted); }
-  .newsletter-form { display: flex; flex: 1; max-width: 480px; }
-  .newsletter-form input {
-    flex: 1;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-right: none;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    padding: 0.75rem 1.1rem;
-    outline: none;
-    transition: border-color 0.2s;
-    letter-spacing: 0.04em;
-  }
-  .newsletter-form input:focus { border-color: var(--accent); }
-  .newsletter-form input::placeholder { color: var(--muted); }
-  footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; }
-  footer p { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
-  footer span { color: var(--accent); }
-  .admin-toggle {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 0.45rem 0.9rem;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .admin-toggle:hover { border-color: var(--accent); color: var(--accent); }
-  .admin-panel {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(6px);
-  }
-  .admin-panel.open { display: flex; animation: fadeUp 0.3s ease; }
-  .admin-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    width: 100%;
-    max-width: 680px;
-    padding: 2.5rem;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-  }
-  .admin-box h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--text); margin-bottom: 0.4rem; }
-  .admin-box .sub { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 2rem; }
-  .admin-close {
-    position: absolute;
-    top: 1.5rem; right: 1.5rem;
-    background: none; border: none;
-    color: var(--muted);
-    font-size: 1.4rem;
-    cursor: pointer;
-    transition: color 0.2s;
-    line-height: 1;
-  }
-  .admin-close:hover { color: var(--text); }
-  .existing-posts { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
-  .existing-posts h3 {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-  .admin-post-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.88rem;
-    gap: 1rem;
-  }
-  .admin-post-item span { color: var(--text); }
-  .admin-post-item small { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); letter-spacing: 0.06em; display: block; }
-  .delete-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    padding: 0.3rem 0.7rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .delete-btn:hover { border-color: var(--red); color: var(--red); }
-  #noResults { display: none; text-align: center; padding: 3rem 0; font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-  @media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; gap: 2rem; }
-    .hero-right { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 2rem; }
-    .posts-grid { grid-template-columns: 1fr; }
-    .about-page { grid-template-columns: 1fr; gap: 2rem; }
-    .newsletter-inner { flex-direction: column; gap: 1.5rem; }
-    .newsletter-form { max-width: 100%; }
-    nav { gap: 1rem; }
-  }
+/* ── RESET & BASE ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #f5f3ef;
+  --panel: #ffffff;
+  --panel2: #f0ede8;
+  --border: #e0dbd2;
+  --text: #1a1814;
+  --muted: #8a8478;
+  --accent: #1a1814;
+  --accent-inv: #f5f3ef;
+  --red: #d94f3d;
+  --green: #2d7d52;
+  --blue: #2563eb;
+  --sidebar-w: 280px;
+  --toolbar-h: 52px;
+  --topbar-h: 56px;
+}
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; display:flex; flex-direction:column; font-size:14px; }
+
+/* ── TOPBAR ── */
+#topbar {
+  height:var(--topbar-h); background:var(--panel); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; padding:0 1rem; gap:1rem; flex-shrink:0; z-index:200;
+}
+.brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:-0.02em; }
+.brand span { opacity:0.35; }
+.topbar-center { display:flex; align-items:center; gap:0.5rem; flex:1; justify-content:center; }
+.page-tab {
+  font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:600; letter-spacing:0.04em;
+  padding:0.35rem 0.85rem; border-radius:4px; border:1px solid transparent;
+  cursor:pointer; background:none; color:var(--muted); transition:all 0.15s; white-space:nowrap;
+}
+.page-tab:hover { color:var(--text); background:var(--panel2); }
+.page-tab.active { background:var(--accent); color:var(--accent-inv); border-color:var(--accent); }
+.page-tab-add {
+  width:28px; height:28px; border-radius:4px; border:1px dashed var(--border);
+  background:none; cursor:pointer; color:var(--muted); font-size:1rem; display:flex; align-items:center; justify-content:center; transition:all 0.15s;
+}
+.page-tab-add:hover { border-color:var(--accent); color:var(--accent); }
+.topbar-right { display:flex; align-items:center; gap:0.5rem; }
+.btn-sm {
+  font-family:'Syne',sans-serif; font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+  padding:0.4rem 1rem; border-radius:4px; border:1px solid var(--border); background:none; cursor:pointer; color:var(--muted); transition:all 0.15s;
+}
+.btn-sm:hover { color:var(--text); border-color:var(--text); }
+.btn-primary {
+  background:var(--accent); color:var(--accent-inv); border-color:var(--accent);
+}
+.btn-primary:hover { background:#333; color:#fff; border-color:#333; }
+
+/* ── LAYOUT ── */
+#workspace { display:flex; flex:1; overflow:hidden; }
+
+/* ── LEFT SIDEBAR ── */
+#sidebar {
+  width:var(--sidebar-w); background:var(--panel); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; overflow:hidden; flex-shrink:0;
+}
+.sidebar-tabs { display:flex; border-bottom:1px solid var(--border); }
+.stab {
+  flex:1; padding:0.6rem 0; font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase; text-align:center; cursor:pointer;
+  border:none; background:none; color:var(--muted); border-bottom:2px solid transparent; transition:all 0.15s;
+}
+.stab.active { color:var(--text); border-bottom-color:var(--text); }
+.sidebar-panel { flex:1; overflow-y:auto; padding:1rem; display:none; }
+.sidebar-panel.active { display:block; }
+
+/* ── BLOCKS ── */
+.block-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+.block-item {
+  border:1px solid var(--border); border-radius:6px; padding:0.75rem 0.5rem; text-align:center;
+  cursor:grab; background:var(--panel); transition:all 0.15s; user-select:none;
+}
+.block-item:hover { border-color:var(--accent); background:var(--panel2); }
+.block-item:active { cursor:grabbing; }
+.block-icon { font-size:1.3rem; margin-bottom:0.25rem; }
+.block-label { font-size:0.68rem; font-weight:500; color:var(--muted); }
+
+/* ── THEME PANEL ── */
+.theme-section { margin-bottom:1.5rem; }
+.theme-label { font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem; display:block; }
+.color-row { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.5rem; }
+.color-swatch {
+  width:28px; height:28px; border-radius:50%; cursor:pointer; border:2px solid transparent;
+  transition:transform 0.15s; flex-shrink:0;
+}
+.color-swatch:hover { transform:scale(1.15); }
+.color-swatch.active { border-color:var(--text); }
+.color-custom { display:flex; align-items:center; gap:0.4rem; margin-top:0.4rem; }
+.color-custom input[type=color] { width:28px; height:28px; border:1px solid var(--border); border-radius:4px; padding:1px; cursor:pointer; background:none; }
+.color-custom label { font-size:0.75rem; color:var(--muted); }
+.font-select, .range-input, .select-input {
+  width:100%; padding:0.4rem 0.6rem; border:1px solid var(--border); border-radius:4px;
+  background:var(--bg); font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text); outline:none; margin-bottom:0.5rem;
+}
+.font-select:focus, .range-input:focus, .select-input:focus { border-color:var(--accent); }
+.range-row { display:flex; align-items:center; gap:0.5rem; }
+.range-row input[type=range] { flex:1; accent-color:var(--accent); }
+.range-val { font-size:0.75rem; color:var(--muted); min-width:32px; text-align:right; }
+
+/* ── PAGES PANEL ── */
+.page-item {
+  display:flex; align-items:center; justify-content:space-between; padding:0.5rem 0.6rem;
+  border-radius:4px; cursor:pointer; transition:background 0.15s; margin-bottom:0.25rem;
+}
+.page-item:hover { background:var(--panel2); }
+.page-item.active { background:var(--panel2); font-weight:500; }
+.page-item-name { font-size:0.85rem; flex:1; }
+.page-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:0.1rem 0.3rem; border-radius:3px; transition:color 0.15s; }
+.page-del:hover { color:var(--red); }
+.add-page-btn {
+  width:100%; padding:0.5rem; border:1px dashed var(--border); border-radius:4px; background:none;
+  color:var(--muted); font-size:0.8rem; cursor:pointer; transition:all 0.15s; margin-top:0.5rem;
+}
+.add-page-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+/* ── TOOLBAR ── */
+#toolbar {
+  height:var(--toolbar-h); background:var(--panel); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; padding:0 1rem; gap:0.25rem; flex-shrink:0; flex-wrap:wrap;
+}
+.tb-btn {
+  height:32px; min-width:32px; padding:0 0.5rem; border-radius:4px; border:1px solid transparent;
+  background:none; cursor:pointer; color:var(--text); font-size:0.85rem; display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s; font-family:'DM Sans',sans-serif; gap:0.3rem;
+}
+.tb-btn:hover { background:var(--panel2); border-color:var(--border); }
+.tb-btn.active { background:var(--accent); color:var(--accent-inv); }
+.tb-sep { width:1px; height:22px; background:var(--border); margin:0 0.25rem; flex-shrink:0; }
+.tb-select {
+  height:32px; padding:0 0.5rem; border:1px solid var(--border); border-radius:4px;
+  background:var(--bg); font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text); outline:none; cursor:pointer;
+}
+.tb-select:focus { border-color:var(--accent); }
+.tb-color { width:32px; height:32px; padding:3px; border:1px solid var(--border); border-radius:4px; cursor:pointer; background:var(--bg); }
+
+/* ── CANVAS AREA ── */
+#canvas-wrap {
+  flex:1; overflow:auto; background:var(--bg); display:flex; align-items:flex-start; justify-content:center;
+  padding:2rem;
+}
+#canvas-container { display:flex; flex-direction:column; height:100%; width:100%; }
+#toolbar-wrap { flex-shrink:0; }
+
+/* ── PREVIEW FRAME ── */
+#preview-frame {
+  width:100%; max-width:900px; margin:0 auto; background:#fff; border-radius:8px;
+  box-shadow:0 4px 40px rgba(0,0,0,0.12); min-height:600px; overflow:hidden; position:relative;
+}
+#canvas {
+  min-height:600px; outline:none; padding:2rem;
+  font-family:var(--cf, 'Georgia, serif'); color:var(--cc, #1a1814);
+  background:var(--cbg, #ffffff); line-height:1.7;
+}
+#canvas:empty::before { content:'Click blocks on the left to start building your page…'; color:#aaa; font-style:italic; }
+
+/* Canvas element selection */
+#canvas [data-block] { position:relative; cursor:default; outline:2px solid transparent; transition:outline 0.15s; margin-bottom:0.5rem; }
+#canvas [data-block]:hover { outline:2px solid rgba(37,99,235,0.4); }
+#canvas [data-block].selected { outline:2px solid var(--blue); }
+#canvas [data-block] .block-controls {
+  display:none; position:absolute; top:-1px; right:-1px; background:var(--blue); border-radius:0 4px 0 4px;
+  gap:2px; padding:2px;
+}
+#canvas [data-block].selected .block-controls { display:flex; }
+.bc-btn {
+  width:22px; height:22px; border:none; background:none; cursor:pointer; color:#fff;
+  font-size:0.75rem; border-radius:2px; display:flex; align-items:center; justify-content:center; transition:background 0.1s;
+}
+.bc-btn:hover { background:rgba(255,255,255,0.2); }
+
+/* ── CANVAS BLOCK STYLES ── */
+#canvas h1 { font-size:2.4em; font-weight:700; line-height:1.15; margin-bottom:0.5rem; }
+#canvas h2 { font-size:1.8em; font-weight:600; line-height:1.2; margin-bottom:0.5rem; }
+#canvas h3 { font-size:1.3em; font-weight:600; margin-bottom:0.4rem; }
+#canvas p { margin-bottom:1rem; }
+#canvas ul, #canvas ol { margin-left:1.5rem; margin-bottom:1rem; }
+#canvas img { max-width:100%; border-radius:4px; display:block; }
+#canvas hr { border:none; border-top:1px solid #e0dbd2; margin:1.5rem 0; }
+#canvas blockquote { border-left:3px solid currentColor; padding-left:1rem; font-style:italic; margin:1rem 0; opacity:0.75; }
+#canvas .hero-block { padding:3rem 2rem; text-align:center; }
+#canvas .hero-block h1 { font-size:3em; margin-bottom:0.75rem; }
+#canvas .hero-block p { font-size:1.15em; opacity:0.75; max-width:560px; margin:0 auto 1.5rem; }
+#canvas .hero-btn { display:inline-block; padding:0.75rem 2rem; background:currentColor; border-radius:4px; font-weight:600; text-decoration:none; }
+#canvas .cols-block { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+#canvas .cols-block-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem; }
+#canvas .card-block { border:1px solid #e0dbd2; border-radius:8px; padding:1.5rem; }
+#canvas .img-block img { width:100%; }
+#canvas .divider-block hr { border-top-width:2px; }
+#canvas .spacer-block { height:3rem; }
+#canvas .nav-block { display:flex; align-items:center; justify-content:space-between; padding:1rem 0; border-bottom:1px solid #e0dbd2; margin-bottom:1rem; }
+#canvas .nav-block .nav-logo { font-weight:700; font-size:1.1em; }
+#canvas .nav-block .nav-links { display:flex; gap:1.5rem; font-size:0.9em; opacity:0.7; }
+#canvas .footer-block { padding:2rem 0; border-top:1px solid #e0dbd2; margin-top:1rem; text-align:center; opacity:0.6; font-size:0.9em; }
+
+/* ── RIGHT PROPERTIES PANEL ── */
+#props-panel {
+  width:240px; background:var(--panel); border-left:1px solid var(--border);
+  display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto;
+}
+.props-header { padding:0.75rem 1rem; border-bottom:1px solid var(--border); }
+.props-title { font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+.props-body { padding:1rem; }
+.prop-row { margin-bottom:1rem; }
+.prop-label { font-size:0.72rem; color:var(--muted); margin-bottom:0.3rem; display:block; font-weight:500; }
+.prop-input {
+  width:100%; padding:0.4rem 0.6rem; border:1px solid var(--border); border-radius:4px;
+  background:var(--bg); font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text); outline:none;
+}
+.prop-input:focus { border-color:var(--accent); }
+.prop-color { width:100%; height:34px; padding:2px; border:1px solid var(--border); border-radius:4px; cursor:pointer; background:none; }
+.prop-empty { padding:2rem 1rem; text-align:center; color:var(--muted); font-size:0.82rem; font-style:italic; }
+
+/* ── MODALS ── */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000;
+  align-items:center; justify-content:center; backdrop-filter:blur(4px);
+}
+.modal-overlay.open { display:flex; animation:fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal {
+  background:var(--panel); border-radius:8px; padding:1.5rem; width:90%; max-width:480px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+}
+.modal h3 { font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; margin-bottom:1rem; }
+.modal input, .modal textarea {
+  width:100%; padding:0.5rem 0.75rem; border:1px solid var(--border); border-radius:4px;
+  font-family:'DM Sans',sans-serif; font-size:0.9rem; color:var(--text); background:var(--bg); outline:none; margin-bottom:0.75rem;
+}
+.modal input:focus, .modal textarea:focus { border-color:var(--accent); }
+.modal-btns { display:flex; gap:0.5rem; justify-content:flex-end; margin-top:0.5rem; }
+
+/* ── TOAST ── */
+#toast {
+  position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(10px);
+  background:var(--accent); color:var(--accent-inv); padding:0.6rem 1.5rem; border-radius:999px;
+  font-size:0.82rem; font-weight:500; opacity:0; transition:all 0.3s; pointer-events:none; z-index:2000;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── DRAG DROP ── */
+.drop-indicator { height:3px; background:var(--blue); border-radius:2px; margin:2px 0; display:none; }
+.drop-indicator.visible { display:block; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <button class="logo" id="navLogo">The Margin</button>
-    <nav>
-      <button id="navWriting" class="active">Writing</button>
-      <button id="navAbout">About</button>
-      <button class="admin-toggle" id="adminToggle">+ New Post</button>
-    </nav>
-  </div>
-</header>
-
-<div class="page active" id="page-home">
-  <div class="hero">
-    <div>
-      <div class="hero-eyebrow">Professional Writing &amp; Craft</div>
-      <h1>Words that <em>cut through</em> the noise.</h1>
-      <p class="hero-desc">Essays, craft notes, and observations on writing, editing, and the professional pursuit of language done well.</p>
-    </div>
-    <div class="hero-right">
-      <div class="featured-label">Latest Issue</div>
-      <div class="featured-post-category" id="featuredCat"></div>
-      <button class="featured-post-title" id="featuredTitle"></button>
-      <div class="featured-post-excerpt" id="featuredExcerpt"></div>
-      <div class="featured-post-meta" id="featuredMeta"></div>
-    </div>
-  </div>
-  <div class="search-wrap">
-    <input class="search-input" type="text" placeholder="Search posts…" id="searchInput">
-    <div class="category-filters" id="categoryFilters">
-      <button class="filter-btn active" data-cat="all">All</button>
-      <button class="filter-btn" data-cat="Craft">Craft</button>
-      <button class="filter-btn" data-cat="Industry">Industry</button>
-      <button class="filter-btn" data-cat="Process">Process</button>
-      <button class="filter-btn" data-cat="Essays">Essays</button>
-    </div>
-  </div>
-  <div class="posts-section">
-    <div class="posts-grid" id="postsGrid"></div>
-    <div id="noResults">No posts found</div>
-  </div>
-  <div class="newsletter-bar">
-    <div class="newsletter-inner">
-      <div class="newsletter-text">
-        <h4>Stay in the margins.</h4>
-        <p>New essays delivered to your inbox, no noise.</p>
-      </div>
-      <form class="newsletter-form" id="newsletterForm">
-        <input type="email" placeholder="your@email.com" required id="nlEmail">
-        <button type="submit" class="btn">Subscribe</button>
-      </form>
-    </div>
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="brand">Folio<span>.build</span></div>
+  <div class="topbar-center" id="pageTabs"></div>
+  <div class="topbar-right">
+    <button class="btn-sm" id="previewBtn">Preview</button>
+    <button class="btn-sm btn-primary" id="exportBtn">Export HTML</button>
   </div>
 </div>
 
-<div class="page" id="page-post">
-  <div class="post-page">
-    <button class="post-back" id="postBack">&#8592; Back to all posts</button>
-    <div class="post-full-category" id="postCat"></div>
-    <h1 class="post-full-title" id="postTitle"></h1>
-    <div class="post-full-meta"><span id="postDate"></span><span id="postRead"></span></div>
-    <div class="post-full-body" id="postBody"></div>
-  </div>
-</div>
+<!-- WORKSPACE -->
+<div id="workspace">
 
-<div class="page" id="page-about">
-  <div class="about-page">
-    <div class="about-sidebar">
-      <div class="eyebrow">About this blog</div>
-      <h2>Writing at the edge of thought.</h2>
+  <!-- LEFT SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-tabs">
+      <button class="stab active" data-tab="blocks">Blocks</button>
+      <button class="stab" data-tab="theme">Theme</button>
+      <button class="stab" data-tab="pages">Pages</button>
     </div>
-    <div class="about-content">
-      <p>Welcome to <em>The Margin</em> — a space for serious thinking about the written word. Here you'll find essays on craft, meditations on the writing life, and honest dispatches from the professional trenches of language.</p>
-      <p>I write about editing, voice, structure, and the invisible architecture beneath good prose. Whether you're a working writer, editor, or someone who cares deeply about how ideas take shape in sentences, this blog is for you.</p>
-      <h3>What you'll find here</h3>
-      <p>Essays on the craft of writing published regularly. Occasional interviews with editors, authors, and journalists. Honest assessments of the publishing industry. And always — close readings of sentences that deserve it.</p>
-      <div class="contact-section">
-        <h3>Get in touch</h3>
-        <p class="contact-desc">For pitches, questions, or reader mail. I read everything.</p>
-        <form id="contactForm">
-          <div class="form-group"><label>Name</label><input type="text" placeholder="Your name" required></div>
-          <div class="form-group"><label>Email</label><input type="email" placeholder="your@email.com" required></div>
-          <div class="form-group"><label>Message</label><textarea rows="5" placeholder="What's on your mind?" required></textarea></div>
-          <button type="submit" class="btn">Send Message</button>
-          <div class="form-success" id="contactSuccess">&#10003; Message sent. I'll be in touch.</div>
-        </form>
+
+    <!-- BLOCKS PANEL -->
+    <div class="sidebar-panel active" id="tab-blocks">
+      <div style="font-family:'Syne',sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;">Layout</div>
+      <div class="block-grid" id="blockPalette">
+        <div class="block-item" data-block-type="hero" draggable="true"><div class="block-icon">🦸</div><div class="block-label">Hero</div></div>
+        <div class="block-item" data-block-type="nav" draggable="true"><div class="block-icon">🔗</div><div class="block-label">Nav Bar</div></div>
+        <div class="block-item" data-block-type="heading" draggable="true"><div class="block-icon">H</div><div class="block-label">Heading</div></div>
+        <div class="block-item" data-block-type="text" draggable="true"><div class="block-icon">¶</div><div class="block-label">Text</div></div>
+        <div class="block-item" data-block-type="image" draggable="true"><div class="block-icon">🖼</div><div class="block-label">Image</div></div>
+        <div class="block-item" data-block-type="cols2" draggable="true"><div class="block-icon">⊟</div><div class="block-label">2 Columns</div></div>
+        <div class="block-item" data-block-type="cols3" draggable="true"><div class="block-icon">⊞</div><div class="block-label">3 Columns</div></div>
+        <div class="block-item" data-block-type="card" draggable="true"><div class="block-icon">🃏</div><div class="block-label">Card</div></div>
+        <div class="block-item" data-block-type="quote" draggable="true"><div class="block-icon">"</div><div class="block-label">Quote</div></div>
+        <div class="block-item" data-block-type="divider" draggable="true"><div class="block-icon">─</div><div class="block-label">Divider</div></div>
+        <div class="block-item" data-block-type="spacer" draggable="true"><div class="block-icon">↕</div><div class="block-label">Spacer</div></div>
+        <div class="block-item" data-block-type="footer" draggable="true"><div class="block-icon">🦶</div><div class="block-label">Footer</div></div>
       </div>
     </div>
+
+    <!-- THEME PANEL -->
+    <div class="sidebar-panel" id="tab-theme">
+      <div class="theme-section">
+        <span class="theme-label">Background Color</span>
+        <div class="color-row" id="bgSwatches">
+          <div class="color-swatch active" style="background:#ffffff" data-color="#ffffff" data-target="bg" title="White"></div>
+          <div class="color-swatch" style="background:#f5f3ef" data-color="#f5f3ef" data-target="bg" title="Cream"></div>
+          <div class="color-swatch" style="background:#0d0d0e" data-color="#0d0d0e" data-target="bg" title="Black"></div>
+          <div class="color-swatch" style="background:#1a2744" data-color="#1a2744" data-target="bg" title="Navy"></div>
+          <div class="color-swatch" style="background:#1c2b1e" data-color="#1c2b1e" data-target="bg" title="Forest"></div>
+          <div class="color-swatch" style="background:#2d1b3e" data-color="#2d1b3e" data-target="bg" title="Plum"></div>
+        </div>
+        <div class="color-custom">
+          <input type="color" id="bgCustom" value="#ffffff">
+          <label>Custom</label>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Text Color</span>
+        <div class="color-row" id="textSwatches">
+          <div class="color-swatch active" style="background:#1a1814" data-color="#1a1814" data-target="text" title="Dark"></div>
+          <div class="color-swatch" style="background:#f5f3ef" data-color="#f5f3ef" data-target="text" title="Light"></div>
+          <div class="color-swatch" style="background:#2563eb" data-color="#2563eb" data-target="text" title="Blue"></div>
+          <div class="color-swatch" style="background:#d94f3d" data-color="#d94f3d" data-target="text" title="Red"></div>
+          <div class="color-swatch" style="background:#2d7d52" data-color="#2d7d52" data-target="text" title="Green"></div>
+          <div class="color-swatch" style="background:#c9a96e" data-color="#c9a96e" data-target="text" title="Gold"></div>
+        </div>
+        <div class="color-custom">
+          <input type="color" id="textCustom" value="#1a1814">
+          <label>Custom</label>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Font Family</span>
+        <select class="font-select" id="fontSelect">
+          <option value="Georgia, serif">Georgia (Serif)</option>
+          <option value="'Playfair Display', Georgia, serif">Playfair Display</option>
+          <option value="'DM Sans', system-ui, sans-serif">DM Sans</option>
+          <option value="'Syne', system-ui, sans-serif">Syne</option>
+          <option value="'Courier New', monospace">Courier New (Mono)</option>
+          <option value="Garamond, 'Times New Roman', serif">Garamond</option>
+          <option value="Helvetica, Arial, sans-serif">Helvetica</option>
+          <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+        </select>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Content Width</span>
+        <select class="select-input" id="widthSelect">
+          <option value="680px">Narrow (680px)</option>
+          <option value="860px" selected>Medium (860px)</option>
+          <option value="1100px">Wide (1100px)</option>
+          <option value="100%">Full Width</option>
+        </select>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Font Size</span>
+        <div class="range-row">
+          <input type="range" id="fontSizeRange" min="12" max="22" value="16" step="1">
+          <span class="range-val" id="fontSizeVal">16px</span>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Line Height</span>
+        <div class="range-row">
+          <input type="range" id="lineHeightRange" min="1.2" max="2.2" value="1.7" step="0.1">
+          <span class="range-val" id="lineHeightVal">1.7</span>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Page Padding</span>
+        <div class="range-row">
+          <input type="range" id="paddingRange" min="0" max="80" value="32" step="4">
+          <span class="range-val" id="paddingVal">32px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGES PANEL -->
+    <div class="sidebar-panel" id="tab-pages">
+      <div id="pageList"></div>
+      <button class="add-page-btn" id="addPageBtn">+ Add Page</button>
+    </div>
+  </div>
+
+  <!-- MAIN EDITOR AREA -->
+  <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+    <div id="toolbar-wrap">
+      <div id="toolbar">
+        <select class="tb-select" id="blockFormatSelect">
+          <option value="p">Paragraph</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+          <option value="h4">Heading 4</option>
+          <option value="blockquote">Quote</option>
+          <option value="pre">Code</option>
+        </select>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbBold" title="Bold"><b>B</b></button>
+        <button class="tb-btn" id="tbItalic" title="Italic"><i>I</i></button>
+        <button class="tb-btn" id="tbUnderline" title="Underline"><u>U</u></button>
+        <button class="tb-btn" id="tbStrike" title="Strikethrough"><s>S</s></button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbUL" title="Bullet list">≡</button>
+        <button class="tb-btn" id="tbOL" title="Numbered list">⋮</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbAlignL" title="Align left">⬤◻◻</button>
+        <button class="tb-btn" id="tbAlignC" title="Center">◻⬤◻</button>
+        <button class="tb-btn" id="tbAlignR" title="Align right">◻◻⬤</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbLink" title="Insert link">🔗</button>
+        <button class="tb-btn" id="tbImg" title="Insert image">🖼</button>
+        <div class="tb-sep"></div>
+        <input type="color" class="tb-color" id="tbTextColor" title="Text color" value="#1a1814">
+        <input type="color" class="tb-color" id="tbBgColor" title="Highlight color" value="#ffffff">
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbUndo" title="Undo">↩</button>
+        <button class="tb-btn" id="tbRedo" title="Redo">↪</button>
+      </div>
+    </div>
+
+    <div id="canvas-wrap">
+      <div id="preview-frame">
+        <div id="canvas" contenteditable="true" spellcheck="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PROPS PANEL -->
+  <div id="props-panel">
+    <div class="props-header"><div class="props-title">Properties</div></div>
+    <div class="props-body" id="propsBody">
+      <div class="prop-empty">Select a block to edit its properties.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LINK MODAL -->
+<div class="modal-overlay" id="linkModal">
+  <div class="modal">
+    <h3>Insert Link</h3>
+    <input type="text" id="linkText" placeholder="Link text">
+    <input type="url" id="linkUrl" placeholder="https://…">
+    <div class="modal-btns">
+      <button class="btn-sm" id="linkCancel">Cancel</button>
+      <button class="btn-sm btn-primary" id="linkInsert">Insert</button>
+    </div>
   </div>
 </div>
 
-<div class="admin-panel" id="adminPanel">
+<!-- IMAGE MODAL -->
+<div class="modal-overlay" id="imgModal">
+  <div class="modal">
+    <h3>Insert Image</h3>
+    <input type="url" id="imgUrl" placeholder="Image URL (https://…)">
+    <div style="text-align:center;margin:0.5rem 0;color:var(--muted);font-size:0.8rem;">— or —</div>
+    <input type="file" id="imgFile" accept="image/*" style="margin-bottom:0.75rem;">
+    <input type="text" id="imgAlt" placeholder="Alt text (optional)">
+    <div class="modal-btns">
+      <button class="btn-sm" id="imgCancel">Cancel</button>
+      <button class="btn-sm btn-primary" id="imgInsert">Insert</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE NAME MODAL -->
+<div class="modal-overlay" id="pageModal">
+  <div class="modal">
+    <h3>New Page</h3>
+    <input type="text" id="pageNameInput" placeholder="Page name (e.g. About)">
+    <div class="modal-btns">
+      <button class="btn-sm" id="pageCancel">Cancel</button>
+      <button class="btn-sm btn-primary" id="pageCreate">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW MODAL -->
+<div class="modal-overlay" id="previewModal" style="align-items:stretch;padding:1rem;">
+  <div style="background:#fff;border-radius:8px;display:flex;flex-direction:column;width:100%;max-width:960px;margin:auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-bottom:1px solid var(--border);background:var(--panel);">
+      <span style="font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Preview</span>
+      <button class="btn-sm" id="previewClose">Close</button>
+    </div>
+    <iframe id="previewIframe" style="flex:1;border:none;min-height:500px;"></iframe>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+'use strict';
+
+// ── STATE ──
+var state = {
+  pages: [{ id: 'home', name: 'Home', content: '' }],
+  activePage: 'home',
+  theme: {
+    bg: '#ffffff',
+    color: '#1a1814',
+    font: 'Georgia, serif',
+    fontSize: '16px',
+    lineHeight: '1.7',
+    padding: '32px',
+    maxWidth: '860px'
+  }
+};
+
+// ── DOM REFS ──
+var canvas = document.getElementById('canvas');
+var pageTabs = document.getElementById('pageTabs');
+var pageList = document.getElementById('pageList');
+var propsBody = document.getElementById('propsBody');
+var blockFormatSelect = document.getElementById('blockFormatSelect');
+
+// ── BLOCK TEMPLATES ──
+var blockTemplates = {
+  hero: function() {
+    return '<div data-block="hero" class="hero-block" contenteditable="true">' +
+      '<h1>Your Headline Here</h1>' +
+      '<p>Write a compelling subtitle that explains what you do or offer.</p>' +
+      '<a class="hero-btn" href="#">Get Started</a>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up" title="Move up">↑</button>' +
+        '<button class="bc-btn" data-action="down" title="Move down">↓</button>' +
+        '<button class="bc-btn" data-action="delete" title="Delete">✕</button>' +
+      '</div></div>';
+  },
+  nav: function() {
+    return '<div data-block="nav" class="nav-block" contenteditable="true">' +
+      '<span class="nav-logo">Your Brand</span>' +
+      '<div class="nav-links"><span>Home</span><span>About</span><span>Contact</span></div>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  heading: function() {
+    return '<div data-block="heading" contenteditable="true">' +
+      '<h2>Section Heading</h2>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  text: function() {
+    return '<div data-block="text" contenteditable="true">' +
+      '<p>Click here to start writing. You can edit this text directly and use the toolbar above to format it.</p>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  image: function() {
+    return '<div data-block="image" class="img-block">' +
+      '<img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=860&q=80" alt="Image">' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  cols2: function() {
+    return '<div data-block="cols2" class="cols-block">' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Left column content</p></div>' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Right column content</p></div>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  cols3: function() {
+    return '<div data-block="cols3" class="cols-block-3">' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Column one</p></div>' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Column two</p></div>' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Column three</p></div>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  card: function() {
+    return '<div data-block="card" class="card-block" contenteditable="true">' +
+      '<h3>Card Title</h3><p>Card content goes here. Great for features, testimonials, or highlights.</p>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  quote: function() {
+    return '<div data-block="quote" contenteditable="true">' +
+      '<blockquote>A memorable quote or highlighted insight goes here.</blockquote>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  divider: function() {
+    return '<div data-block="divider" class="divider-block"><hr>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  spacer: function() {
+    return '<div data-block="spacer" class="spacer-block">' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  footer: function() {
+    return '<div data-block="footer" class="footer-block" contenteditable="true">' +
+      '<p>© 2024 Your Brand. All rights reserved.</p>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  }
+};
+
+// ── APPLY THEME ──
+function applyTheme() {
+  var t = state.theme;
+  canvas.style.setProperty('--cbg', t.bg);
+  canvas.style.setProperty('--cc', t.color);
+  canvas.style.setProperty('--cf', t.font);
+  canvas.style.backgroundColor = t.bg;
+  canvas.style.color = t.color;
+  canvas.style.fontFamily = t.font;
+  canvas.style.fontSize = t.fontSize;
+  canvas.style.lineHeight = t.lineHeight;
+  canvas.style.padding = t.padding;
+  canvas.style.maxWidth = t.maxWidth;
+  canvas.style.margin = '0 auto';
+}
+
+// ── RENDER PAGES ──
+function renderPageTabs() {
+  pageTabs.innerHTML = '';
+  state.pages.forEach(function(page) {
+    var btn = document.createElement('button');
+    btn.className = 'page-tab' + (page.id === state.activePage ? ' active' : '');
+    btn.textContent = page.name;
+    btn.addEventListener('click', function() { switchPage(page.id); });
+    pageTabs.appendChild(btn);
+  });
+  var add = document.createElement('button');
+  add.className = 'page-tab-add';
+  add.textContent = '+';
+  add.title = 'Add page';
+  add.addEventListener('click', function() { openModal('pageModal'); });
+  pageTabs.appendChild(add);
+}
+
+function renderPageList() {
+  pageList.innerHTML = '';
+  state.pages.forEach(function(page) {
+    var item = document.createElement('div');
+    item.className = 'page-item' + (page.id === state.activePage ? ' active' : '');
+    item.innerHTML = '<span class="page-item-name">' + page.name + '</span>';
+    if (state.pages.length > 1) {
+      var del = document.createElement('button');
+      del.className = 'page-del';
+      del.textContent = '✕';
+      del.title = 'Delete page';
+      del.addEventListener('click', function(e) { e.stopPropagation(); deletePage(page.id); });
+      item.appendChild(del);
+    }
+    item.addEventListener('click', function() { switchPage(page.id); });
+    pageList.appendChild(item);
+  });
+}
+
+function switchPage(id) {
+  saveCurrent();
+  state.activePage = id;
+  var page = state.pages.find(function(p) { return p.id === id; });
+  canvas.innerHTML = page ? page.content : '';
+  renderPageTabs();
+  renderPageList();
+  clearSelection();
+}
+
+function saveCurrent() {
+  var page = state.pages.find(function(p) { return p.id === state.activePage; });
+  if (page) page.content = canvas.innerHTML;
+}
+
+function deletePage(id) {
+  if (state.pages.length <= 1) return;
+  state.pages = state.pages.filter(function(p) { return p.id !== id; });
+  if (state.activePage === id) state.activePage = state.pages[0].id;
+  switchPage(state.activePage);
+}
+
+// ── BLOCK INSERTION ──
+function insertBlock(type) {
+  var tmpl = blockTemplates[type];
+  if (!tmpl) return;
+  var div = document.createElement('div');
+  div.innerHTML = tmpl();
+  var block = div.firstChild;
+  canvas.appendChild(block);
+  block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  showToast('Block added');
+}
+
+// ── BLOCK CONTROLS ──
+canvas.addEventListener('click', function(e) {
+  var actionBtn = e.target.closest('[data-action]');
+  if (actionBtn) {
+    e.preventDefault(); e.stopPropagation();
+    var block = actionBtn.closest('[data-block]');
+    var action = actionBtn.getAttribute('data-action');
+    if (action === 'delete') { block.remove(); clearSelection(); saveCurrent(); }
+    else if (action === 'up' && block.previousElementSibling) { canvas.insertBefore(block, block.previousElementSibling); }
+    else if (action === 'down' && block.nextElementSibling) { canvas.insertBefore(block.nextElementSibling, block); }
+    return;
+  }
+  var block = e.target.closest('[data-block]');
+  selectBlock(block);
+});
+
+var selectedBlock = null;
+function selectBlock(block) {
+  document.querySelectorAll('#canvas [data-block]').forEach(function(b) { b.classList.remove('selected'); });
+  selectedBlock = block;
+  if (block) {
+    block.classList.add('selected');
+    renderProps(block);
+  } else {
+    clearSelection();
+  }
+}
+
+function clearSelection() {
+  document.querySelectorAll('#canvas [data-block]').forEach(function(b) { b.classList.remove('selected'); });
+  selectedBlock = null;
+  propsBody.innerHTML = '<div class="prop-empty">Select a block to edit its properties.</div>';
+}
+
+// ── PROPERTIES PANEL ──
+function renderProps(block) {
+  var type = block.getAttribute('data-block');
+  var html = '<div class="prop-row"><span class="prop-label">Block Type</span><input class="prop-input" value="' + type + '" readonly></div>';
+
+  // Background color prop
+  var bg = block.style.backgroundColor || '';
+  html += '<div class="prop-row"><span class="prop-label">Background</span><input type="color" class="prop-color" id="propBg" value="' + (bg ? rgbToHex(bg) : '#ffffff') + '"></div>';
+
+  // Padding prop
+  var pad = block.style.padding || '';
+  html += '<div class="prop-row"><span class="prop-label">Padding</span><input class="prop-input" id="propPad" value="' + pad + '" placeholder="e.g. 2rem"></div>';
+
+  // Border radius
+  var br = block.style.borderRadius || '';
+  html += '<div class="prop-row"><span class="prop-label">Border Radius</span><input class="prop-input" id="propBr" value="' + br + '" placeholder="e.g. 8px"></div>';
+
+  // Text align
+  var ta = block.style.textAlign || 'left';
+  html += '<div class="prop-row"><span class="prop-label">Text Align</span><select class="prop-input" id="propAlign"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></div>';
+
+  // Image src if image block
+  if (type === 'image') {
+    var img = block.querySelector('img');
+    if (img) {
+      html += '<div class="prop-row"><span class="prop-label">Image URL</span><input class="prop-input" id="propImgSrc" value="' + (img.src || '') + '"></div>';
+      html += '<div class="prop-row"><span class="prop-label">Alt Text</span><input class="prop-input" id="propImgAlt" value="' + (img.alt || '') + '"></div>';
+    }
+  }
+
+  propsBody.innerHTML = html;
+
+  // Restore align select
+  var alignSel = document.getElementById('propAlign');
+  if (alignSel) { alignSel.value = ta; alignSel.addEventListener('change', function() { block.style.textAlign = this.value; }); }
+
+  var bgInput = document.getElementById('propBg');
+  if (bgInput) bgInput.addEventListener('input', function() { block.style.backgroundColor = this.value; });
+
+  var padInput = document.getElementById('propPad');
+  if (padInput) padInput.addEventListener('change', function() { block.style.padding = this.value; });
+
+  var brInput = document.getElementById('propBr');
+  if (brInput) brInput.addEventListener('change', function() { block.style.borderRadius = this.value; });
+
+  var srcInput = document.getElementById('propImgSrc');
+  if (srcInput) srcInput.addEventListener('change', function() { var img = block.querySelector('img'); if(img) img.src = this.value; });
+
+  var altInput = document.getElementById('propImgAlt');
+  if (altInput) altInput.addEventListener('change', function() { var img = block.querySelector('img'); if(img) img.alt = this.value; });
+}
+
+function rgbToHex(rgb) {
+  var result = rgb.match(/\d+/g);
+  if (!result) return '#ffffff';
+  return '#' + result.slice(0,3).map(function(n) { return ('0' + parseInt(n).toString(16)).slice(-2); }).join('');
+}
+
+// ── DRAG & DROP FROM PALETTE ──
+var dragType = null;
+
+document.querySelectorAll('.block-item').forEach(function(item) {
+  item.addEventListener('dragstart', function(e) {
+    dragType = item.getAttribute('data-block-type');
+    e.dataTransfer.effectAllowed = 'copy';
+  });
+  item.addEventListener('dragend', function() { dragType = null; });
+});
+
+canvas.addEventListener('dragover', function(e) {
+  if (!dragType) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+});
+
+canvas.addEventListener('drop', function(e) {
+  if (!dragType) return;
+  e.preventDefault();
+  insertBlock(dragType);
+  dragType = null;
+});
+
+// ── BLOCK PALETTE CLICK ──
+document.querySelectorAll('.block-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    insertBlock(item.getAttribute('data-block-type'));
+  });
+});
+
+// ── SIDEBAR TABS ──
+document.querySelectorAll('.stab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.stab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.sidebar-panel').forEach(function(p) { p.classList.remove('active'); });
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.getAttribute('data-tab')).classList.add('active');
+  });
+});
+
+// ── THEME CONTROLS ──
+function setupSwatches(selector, target) {
+  document.querySelectorAll(selector).forEach(function(sw) {
+    sw.addEventListener('click', function() {
+      document.querySelectorAll(selector).forEach(function(s) { s.classList.remove('active'); });
+      sw.classList.add('active');
+      state.theme[target] = sw.getAttribute('data-color');
+      applyTheme();
+    });
+  });
+}
+setupSwatches('[data-target="bg"]', 'bg');
+setupSwatches('[data-target="text"]', 'color');
+
+document.getElementById('bgCustom').addEventListener('input', function() {
+  state.theme.bg = this.value;
+  document.querySelectorAll('[data-target="bg"]').forEach(function(s) { s.classList.remove('active'); });
+  applyTheme();
+});
+
+document.getElementById('textCustom').addEventListener('input', function() {
+  state.theme.color = this.value;
+  document.querySelectorAll('[data-target="text"]').forEach(function(s) { s.classList.remove('active'); });
+  applyTheme();
+});
+
+document.getElementById('fontSelect').addEventListener('change', function() {
+  state.theme.font = this.value;
+  applyTheme();
+});
+
+document.getElementById('widthSelect').addEventListener('change', function() {
+  state.theme.maxWidth = this.value;
+  applyTheme();
+});
+
+function setupRange(rangeId, valId, themeKey, unit) {
+  var range = document.getElementById(rangeId);
+  var val = document.getElementById(valId);
+  range.addEventListener('input', function() {
+    var v = this.value + (unit || '');
+    val.textContent = v;
+    state.theme[themeKey] = v;
+    applyTheme();
+  });
+}
+setupRange('fontSizeRange', 'fontSizeVal', 'fontSize', 'px');
+setupRange('lineHeightRange', 'lineHeightVal', 'lineHeight', '');
+setupRange('paddingRange', 'paddingVal', 'padding', 'px');
+
+// ── TOOLBAR ACTIONS ──
+function tbCmd(cmd, val) {
+  canvas.focus();
+  document.execCommand(cmd, false, val || null);
+}
+
+document.getElementById('tbBold').addEventListener('click', function() { tbCmd('bold'); });
+document.getElementById('tbItalic').addEventListener('click', function() { tbCmd('italic'); });
+document.getElementById('tbUnderline').addEventListener('click', function() { tbCmd('underline'); });
+document.getElementById('tbStrike').addEventListener('click', function() { tbCmd('strikeThrough'); });
+document.getElementById('tbUL').addEventListener('click', function() { tbCmd('insertUnorderedList'); });
+document.getElementById('tbOL').addEventListener('click', function() { tbCmd('insertOrderedList'); });
+document.getElementById('tbAlignL').addEventListener('click', function() { tbCmd('justifyLeft'); });
+document.getElementById('tbAlignC').addEventListener('click', function() { tbCmd('justifyCenter'); });
+document.getElementById('tbAlignR').addEventListener('click', function() { tbCmd('justifyRight'); });
+document.getElementById('tbUndo').addEventListener('click', function() { tbCmd('undo'); });
+document.getElementById('tbRedo').addEventListener('click', function() { tbCmd('redo'); });
+
+document.getElementById('tbTextColor').addEventListener('input', function() { tbCmd('foreColor', this.value); });
+document.getElementById('tbBgColor').addEventListener('input', function() { tbCmd('hiliteColor', this.value); });
+
+blockFormatSelect.addEventListener('change', function() {
+  tbCmd('formatBlock', '<' + this.value + '>');
+});
+
+// ── LINK MODAL ──
+var savedRange = null;
+document.getElementById('tbLink').addEventListener('click', function() {
+  var sel = window.getSelection();
+  if (sel.rangeCount) savedRange = sel.getRangeAt(0).cloneRange();
+  var selText = sel.toString();
+  document.getElementById('linkText').value = selText;
+  document.getElementById('linkUrl').value = '';
+  openModal('linkModal');
+});
+document.getElementById('linkCancel').addEventListener('click', function() { closeModal('linkModal'); });
+document.getElementById('linkInsert').addEventListener('click', function() {
+  var url = document.getElementById('linkUrl').value.trim();
+  var text = document.getElementById('linkText').value.trim();
+  if (!url) return;
+  canvas.focus();
+  if (savedRange) {
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedRange);
+  }
+  tbCmd('createLink', url);
+  closeModal('linkModal');
+  savedRange = null;
+});
+
+// ── IMAGE MODAL ──
+document.getElementById('tbImg').addEventListener('click', function() { openModal('imgModal'); });
+document.getElementById('imgCancel').addEventListener('click', function() { closeModal('imgModal'); });
+document.getElementById('imgInsert').addEventListener('click', function() {
+  var url = document.getElementById('imgUrl').value.trim();
+  var alt = document.getElementById('imgAlt').value.trim();
+  var file = document.getElementById('imgFile').files[0];
+
+  function doInsert(src) {
+    canvas.focus();
+    var img = '<img src="' + src + '" alt="' + alt + '" style="max-width:100%;">';
+    tbCmd('insertHTML', img);
+    closeModal('imgModal');
+    document.getElementById('imgUrl').value = '';
+    document.getElementById('imgAlt').value = '';
+    document.getElementById('imgFile').value = '';
+  }
+
+  if (file) {
+    var reader = new FileReader();
+    reader.onload = function(e) { doInsert(e.target.result); };
+    reader.readAsDataURL(file);
+  } else if (url) {
+    doInsert(url);
+  }
+});
+
+// ── PAGE MODAL ──
+document.getElementById('addPageBtn').addEventListener('click', function() { openModal('pageModal'); });
+document.getElementById('pageCancel').addEventListener('click', function() { closeModal('pageModal'); });
+document.getElementById('pageCreate').addEventListener('click', function() {
+  var name = document.getElementById('pageNameInput').value.trim();
+  if (!name) return;
+  var id = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  state.pages.push({ id: id, name: name, content: '' });
+  closeModal('pageModal');
+  document.getElementById('pageNameInput').value = '';
+  switchPage(id);
+  showToast('Page "' + name + '" created');
+});
+
+// ── PREVIEW ──
+document.getElementById('previewBtn').addEventListener('click', function() {
+  saveCurrent();
+  var html = buildExport(true);
+  var iframe = document.getElementById('previewIframe');
+  iframe.srcdoc = html;
+  openModal('previewModal');
+});
+document.getElementById('previewClose').addEventListener('click', function() { closeModal('previewModal'); });
+
+// ── EXPORT ──
+document.getElementById('exportBtn').addEventListener('click', function() {
+  saveCurrent();
+  var html = buildExport(false);
+  var blob = new Blob([html], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'site.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported as site.html');
+});
+
+// ── BUILD EXPORT ──
+function buildExport(isPreview) {
+  var t = state.theme;
+
+  // Build nav links for multi-page
+  var navLinks = state.pages.map(function(p, i) {
+    return '<a href="' + (i === 0 ? '#' : '#page-' + p.id) + '" onclick="showPage(\'' + p.id + '\');return false;">' + p.name + '</a>';
+  }).join('\n      ');
+
+  // Build page sections - strip block-controls from export
+  var sections = state.pages.map(function(p) {
+    var div = document.createElement('div');
+    div.innerHTML = p.content;
+    // Remove editor controls from exported html
+    div.querySelectorAll('.block-controls').forEach(function(bc) { bc.remove(); });
+    // Remove selected/hover classes
+    div.querySelectorAll('[data-block]').forEach(function(b) {
+      b.classList.remove('selected');
+      b.removeAttribute('contenteditable');
+    });
+    div.querySelectorAll('[contenteditable]').forEach(function(el) {
+      el.removeAttribute('contenteditable');
+    });
+    return '<section id="page-' + p.id + '" class="site-page">' + div.innerHTML + '</section>';
+  }).join('\n');
+
+  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n' +
+    '<meta charset="UTF-8">\n' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+    '<title>' + (state.pages[0] ? state.pages[0].name : 'My Site') + '</title>\n' +
+    (t.font.includes('Playfair') ? '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">\n' : '') +
+    (t.font.includes('DM Sans') ? '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">\n' : '') +
+    (t.font.includes('Syne') ? '<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">\n' : '') +
+    '<style>\n' +
+    '*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }\n' +
+    'body { font-family:' + t.font + '; background:' + t.bg + '; color:' + t.color + '; font-size:' + t.fontSize + '; line-height:' + t.lineHeight + '; }\n' +
+    '.site-nav { display:flex; align-items:center; justify-content:space-between; padding:1rem 2rem; border-bottom:1px solid rgba(128,128,128,0.2); }\n' +
+    '.site-nav a { color:inherit; text-decoration:none; font-weight:500; cursor:pointer; }\n' +
+    '.site-nav .nav-links { display:flex; gap:2rem; }\n' +
+    '.site-page { display:none; }\n' +
+    '.site-page.active { display:block; }\n' +
+    '.content-wrap { max-width:' + t.maxWidth + '; margin:0 auto; padding:' + t.padding + '; }\n' +
+    'h1 { font-size:2.4em; font-weight:700; line-height:1.15; margin-bottom:0.5rem; }\n' +
+    'h2 { font-size:1.8em; font-weight:600; line-height:1.2; margin-bottom:0.5rem; }\n' +
+    'h3 { font-size:1.3em; font-weight:600; margin-bottom:0.4rem; }\n' +
+    'p { margin-bottom:1rem; }\n' +
+    'ul, ol { margin-left:1.5rem; margin-bottom:1rem; }\n' +
+    'img { max-width:100%; border-radius:4px; display:block; }\n' +
+    'hr { border:none; border-top:1px solid rgba(128,128,128,0.2); margin:1.5rem 0; }\n' +
+    'blockquote { border-left:3px solid currentColor; padding-left:1rem; font-style:italic; margin:1rem 0; opacity:0.75; }\n' +
+    'a { color:inherit; }\n' +
+    '.hero-block { padding:4rem 2rem; text-align:center; }\n' +
+    '.hero-block h1 { font-size:3em; margin-bottom:0.75rem; }\n' +
+    '.hero-block p { font-size:1.15em; opacity:0.75; max-width:560px; margin:0 auto 1.5rem; }\n' +
+    '.hero-btn { display:inline-block; padding:0.75rem 2rem; background:currentColor; border-radius:4px; font-weight:600; text-decoration:none; }\n' +
+    '.cols-block { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }\n' +
+    '.cols-block-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem; }\n' +
+    '.card-block { border:1px solid rgba(128,128,128,0.2); border-radius:8px; padding:1.5rem; }\n' +
+    '.nav-block { display:flex; align-items:center; justify-content:space-between; padding:1rem 0; border-bottom:1px solid rgba(128,128,128,0.2); margin-bottom:1rem; }\n' +
+    '.nav-block .nav-logo { font-weight:700; font-size:1.1em; }\n' +
+    '.nav-block .nav-links { display:flex; gap:1.5rem; font-size:0.9em; opacity:0.7; }\n' +
+    '.footer-block { padding:2rem 0; border-top:1px solid rgba(128,128,128,0.2); margin-top:1rem; text-align:center; opacity:0.6; font-size:0.9em; }\n' +
+    '.spacer-block { height:3rem; }\n' +
+    '@media (max-width:640px) { .cols-block, .cols-block-3 { grid-template-columns:1fr; } }\n' +
+    '</style>\n</head>\n<body>\n' +
+    (state.pages.length > 1 ? '<nav class="site-nav"><div class="nav-links">' + navLinks + '</div></nav>\n' : '') +
+    '<div class="content-wrap">\n' + sections + '\n</div>\n' +
+    '<script>\n' +
+    '(function(){\n' +
+    '  var pages = ' + JSON.stringify(state.pages.map(function(p) { return p.id; })) + ';\n' +
+    '  function showPage(id) {\n' +
+    '    document.querySelectorAll(".site-page").forEach(function(p){p.classList.remove("active");});\n' +
+    '    var el = document.getElementById("page-"+id);\n' +
+    '    if(el) el.classList.add("active");\n' +
+    '    window.location.hash = id;\n' +
+    '  }\n' +
+    '  window.showPage = showPage;\n' +
+    '  var hash = window.location.hash.replace("#","") || pages[0];\n' +
+    '  showPage(hash);\n' +
+    '})();\n' +
+    '<\/script>\n</body>\n</html>';
+}
+
+// ── MODAL HELPERS ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+  overlay.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+});
+
+// ── TOAST ──
+var toastTimer;
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 2200);
+}
+
+// ── AUTOSAVE ──
+canvas.addEventListener('input', function() {
+  clearTimeout(canvas._saveTimer);
+  canvas._saveTimer = setTimeout(saveCurrent, 600);
+});
+
+// ── INIT ──
+applyTheme();
+renderPageTabs();
+renderPageList();
+// Set first page active
+if (state.pages.length > 0) {
+  document.getElementById('page-' + state.activePage) || null;
+}
+showToast('Welcome to Folio — click a block to begin');
+
+})();
+</script>
+</body>
+</html><div class="admin-panel" id="adminPanel">
   <div class="admin-box">
     <button class="admin-close" id="adminClose">&#215;</button>
     <h2>New Post</h2>
