@@ -256,6 +256,2058 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 ::-webkit-scrollbar { width:5px; height:5px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
+
+/* ── POST CARD GRID BLOCK ── */
+#canvas .postcard-grid-block { position:relative; }
+#canvas .postcard-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem;
+}
+#canvas .postcard-item {
+  border-radius:6px; overflow:hidden; cursor:default;
+  position:relative; transition:box-shadow 0.2s; background:transparent;
+}
+#canvas .postcard-item:hover { box-shadow:0 4px 20px rgba(0,0,0,0.12); }
+#canvas .postcard-img-wrap { position:relative; overflow:hidden; aspect-ratio:4/3; border-radius:6px 6px 0 0; }
+#canvas .postcard-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s ease; }
+#canvas .postcard-item:hover .postcard-img { transform:scale(1.04); cursor:pointer; }
+#canvas .postcard-meta { padding:0.5rem 0 0; background:transparent; }
+#canvas .postcard-title {
+  font-size:0.88em; font-weight:600; line-height:1.3; outline:none;
+  background:transparent; border:none;
+  border-bottom:1px dashed transparent; transition:border-color 0.15s;
+}
+#canvas .postcard-title:focus { border-bottom-color:#c9a96e; }
+#canvas .postcard-title:empty::before { content:'Post Title'; color:#aaa; font-style:italic; }
+#canvas .postcard-item-controls {
+  display:none; position:absolute; top:0.4rem; right:0.4rem; gap:0.25rem; flex-direction:column;
+}
+#canvas .postcard-item:hover .postcard-item-controls { display:flex; }
+.pci-btn {
+  font-family:'DM Sans',sans-serif; font-size:0.65rem; font-weight:600; letter-spacing:0.04em;
+  padding:0.25rem 0.5rem; border-radius:3px; border:none; cursor:pointer; background:rgba(0,0,0,0.6);
+  color:#fff; white-space:nowrap; transition:background 0.15s;
+}
+.pci-btn:hover { background:rgba(0,0,0,0.85); }
+.pci-del:hover { background:var(--red) !important; }
+#canvas .postcard-grid-footer {
+  margin-top:1rem; display:flex; justify-content:center;
+}
+.add-card-btn {
+  font-family:'Syne',sans-serif; font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+  padding:0.5rem 1.5rem; border:1px dashed #c9a96e; border-radius:4px; background:none;
+  color:#8a7450; cursor:pointer; transition:all 0.15s;
+}
+.add-card-btn:hover { background:#fffdf7; border-style:solid; }
+
+/* ── PHOTO CAPTION BLOCK ── */
+#canvas .photocaption-grid-block { position:relative; }
+#canvas .photocaption-grid { display:grid; grid-template-columns:repeat(3,260px); gap:1.25rem; }
+#canvas .photocaption-item { position:relative; }
+#canvas .photocaption-img-wrap { overflow:hidden; border-radius:6px; width:260px; height:380px; }
+#canvas .photocaption-img { width:100%; height:100%; display:block; object-fit:cover; transition:transform 0.3s ease; }
+#canvas .photocaption-item:hover .photocaption-img { transform:scale(1.04); }
+#canvas .photocaption-meta { padding:0.3rem 0 0; }
+#canvas .photocaption-link {
+  font-size:0.85em; color:inherit; text-decoration:none; opacity:0.65;
+  border-bottom:1px solid currentColor; transition:opacity 0.15s; cursor:text;
+  display:inline-block; outline:none; white-space:pre-wrap;
+}
+#canvas .photocaption-link:hover { opacity:1; }
+#canvas .photocaption-link:empty::before { content:"Caption / link text"; color:#aaa; font-style:italic; }
+#canvas .photocaption-item-controls { display:none; position:absolute; top:0.4rem; right:0.4rem; gap:0.25rem; flex-direction:column; }
+#canvas .photocaption-item:hover .photocaption-item-controls { display:flex; }
+#canvas .photocaption-grid-footer { margin-top:1rem; display:flex; justify-content:center; }
+.add-photo-btn { font-family:'Syne',sans-serif; font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.5rem 1.5rem; border:1px dashed #6e9ec9; border-radius:4px; background:none; color:#3a5f80; cursor:pointer; transition:all 0.15s; }
+.add-photo-btn:hover { background:#f7fbff; border-style:solid; }
+
+/* ── POST READER MODAL ── */
+#postReaderModal {
+  display:none; position:fixed; inset:0; z-index:2000;
+  background:rgba(0,0,0,0.7); backdrop-filter:blur(6px);
+  align-items:flex-start; justify-content:center; padding:2rem 1rem; overflow-y:auto;
+}
+#postReaderModal.open { display:flex; animation:fadeIn 0.25s ease; }
+#postReaderInner {
+  background:#fff; border-radius:10px; width:100%; max-width:720px;
+  box-shadow:0 24px 80px rgba(0,0,0,0.3); display:flex; flex-direction:column;
+  min-height:200px; position:relative; margin:auto;
+}
+#postReaderHero { width:100%; aspect-ratio:16/6; object-fit:cover; border-radius:10px 10px 0 0; display:block; }
+#postReaderHeroNone { display:none; }
+#postReaderBody { padding:2.5rem 3rem 3rem; }
+#postReaderTitle {
+  font-size:2rem; font-weight:700; line-height:1.2; margin-bottom:1.5rem;
+  outline:none; border:none; width:100%; font-family:inherit;
+  border-bottom:2px dashed transparent; transition:border-color 0.15s;
+}
+#postReaderTitle:focus { border-bottom-color:#c9a96e; }
+#postReaderContent {
+  font-size:1.05rem; line-height:1.85; color:#333; outline:none; min-height:200px;
+}
+#postReaderContent p { margin-bottom:1.1rem; }
+#postReaderContent h2 { font-size:1.4rem; font-weight:700; margin:2rem 0 0.75rem; }
+#postReaderContent h3 { font-size:1.15rem; font-weight:600; margin:1.5rem 0 0.5rem; }
+#postReaderContent blockquote { border-left:3px solid #c9a96e; padding-left:1rem; font-style:italic; margin:1.5rem 0; color:#666; }
+#postReaderContent ul, #postReaderContent ol { margin-left:1.5rem; margin-bottom:1rem; }
+#postReaderContent a { color:#2563eb; }
+#postReaderToolbar {
+  display:flex; align-items:center; gap:0.25rem; padding:0.6rem 1rem;
+  border-bottom:1px solid #e0dbd2; border-top:1px solid #e0dbd2; flex-wrap:wrap;
+  background:#fafafa; position:sticky; top:0; z-index:10;
+}
+.pr-btn {
+  height:28px; min-width:28px; padding:0 0.4rem; border-radius:3px; border:1px solid transparent;
+  background:none; cursor:pointer; font-size:0.8rem; display:flex; align-items:center; justify-content:center;
+  transition:all 0.12s; font-family:'DM Sans',sans-serif; color:#333;
+}
+.pr-btn:hover { background:#efefef; border-color:#ddd; }
+.pr-sep { width:1px; height:18px; background:#e0dbd2; margin:0 0.2rem; }
+.pr-theme-swatch {
+  width:22px; height:22px; border-radius:50%; cursor:pointer; transition:transform 0.15s, border-color 0.15s;
+  flex-shrink:0; margin:0 2px;
+}
+.pr-theme-swatch:hover { transform:scale(1.2); }
+.pr-theme-swatch.active { border-color:#2563eb !important; transform:scale(1.1); }
+#postReaderClose {
+  position:absolute; top:0.75rem; right:0.75rem; width:32px; height:32px; border-radius:50%;
+  background:rgba(0,0,0,0.5); border:none; color:#fff; font-size:1.1rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; z-index:20; transition:background 0.15s; line-height:1;
+}
+#postReaderClose:hover { background:rgba(0,0,0,0.75); }
+#postReaderSaveBadge {
+  position:absolute; bottom:0.75rem; right:1rem; font-size:0.7rem; color:#aaa;
+  font-family:'DM Sans',sans-serif; pointer-events:none;
+}
+.pr-img-upload-btn {
+  font-family:'Syne',sans-serif; font-size:0.65rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+  padding:0.3rem 0.75rem; border:1px solid #ddd; border-radius:3px; background:none; cursor:pointer; color:#666; transition:all 0.15s;
+}
+.pr-img-upload-btn:hover { border-color:#1a1814; color:#1a1814; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="brand">Folio<span>.build</span></div>
+  <div class="topbar-center" id="pageTabs"></div>
+  <div class="topbar-right">
+    <button class="btn-sm" id="openBtn">Open…</button>
+    <button class="btn-sm" id="previewBtn">Preview</button>
+    <button class="btn-sm btn-primary" id="exportBtn">Export HTML</button>
+    <input type="file" id="openFileInput" accept=".html,text/html" style="display:none;">
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div id="workspace">
+
+  <!-- LEFT SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-tabs">
+      <button class="stab active" data-tab="blocks">Blocks</button>
+      <button class="stab" data-tab="theme">Theme</button>
+      <button class="stab" data-tab="pages">Pages</button>
+    </div>
+
+    <!-- BLOCKS PANEL -->
+    <div class="sidebar-panel active" id="tab-blocks">
+      <div style="font-family:'Syne',sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;">Layout</div>
+      <div class="block-grid" id="blockPalette">
+        <div class="block-item" data-block-type="hero" draggable="true"><div class="block-icon">🦸</div><div class="block-label">Hero</div></div>
+        <div class="block-item" data-block-type="nav" draggable="true"><div class="block-icon">🔗</div><div class="block-label">Nav Bar</div></div>
+        <div class="block-item" data-block-type="heading" draggable="true"><div class="block-icon">H</div><div class="block-label">Heading</div></div>
+        <div class="block-item" data-block-type="text" draggable="true"><div class="block-icon">¶</div><div class="block-label">Text</div></div>
+        <div class="block-item" data-block-type="image" draggable="true"><div class="block-icon">🖼</div><div class="block-label">Image</div></div>
+        <div class="block-item" data-block-type="cols2" draggable="true"><div class="block-icon">⊟</div><div class="block-label">2 Columns</div></div>
+        <div class="block-item" data-block-type="cols3" draggable="true"><div class="block-icon">⊞</div><div class="block-label">3 Columns</div></div>
+        <div class="block-item" data-block-type="card" draggable="true"><div class="block-icon">🃏</div><div class="block-label">Card</div></div>
+        <div class="block-item" data-block-type="quote" draggable="true"><div class="block-icon">"</div><div class="block-label">Quote</div></div>
+        <div class="block-item" data-block-type="divider" draggable="true"><div class="block-icon">─</div><div class="block-label">Divider</div></div>
+        <div class="block-item" data-block-type="spacer" draggable="true"><div class="block-icon">↕</div><div class="block-label">Spacer</div></div>
+        <div class="block-item" data-block-type="footer" draggable="true"><div class="block-icon">🦶</div><div class="block-label">Footer</div></div>
+        <div class="block-item" data-block-type="postcardgrid" draggable="true" style="grid-column:span 2;border-color:#c9a96e;background:#fffdf7;"><div class="block-icon">📰</div><div class="block-label" style="color:#8a7450;font-weight:600;">Post Card Grid</div></div>
+        <div class="block-item" data-block-type="photocaption" draggable="true" style="grid-column:span 2;border-color:#6e9ec9;background:#f7fbff;"><div class="block-icon">🔗</div><div class="block-label" style="color:#3a5f80;font-weight:600;">Photo Grid + Captions</div></div>
+      </div>
+    </div>
+
+    <!-- THEME PANEL -->
+    <div class="sidebar-panel" id="tab-theme">
+      <div class="theme-section">
+        <span class="theme-label">Background Color</span>
+        <div class="color-row" id="bgSwatches">
+          <div class="color-swatch active" style="background:#ffffff" data-color="#ffffff" data-target="bg" title="White"></div>
+          <div class="color-swatch" style="background:#f5f3ef" data-color="#f5f3ef" data-target="bg" title="Cream"></div>
+          <div class="color-swatch" style="background:#0d0d0e" data-color="#0d0d0e" data-target="bg" title="Black"></div>
+          <div class="color-swatch" style="background:#1a2744" data-color="#1a2744" data-target="bg" title="Navy"></div>
+          <div class="color-swatch" style="background:#1c2b1e" data-color="#1c2b1e" data-target="bg" title="Forest"></div>
+          <div class="color-swatch" style="background:#2d1b3e" data-color="#2d1b3e" data-target="bg" title="Plum"></div>
+        </div>
+        <div class="color-custom">
+          <input type="color" id="bgCustom" value="#ffffff">
+          <label>Custom</label>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Text Color</span>
+        <div class="color-row" id="textSwatches">
+          <div class="color-swatch active" style="background:#1a1814" data-color="#1a1814" data-target="text" title="Dark"></div>
+          <div class="color-swatch" style="background:#f5f3ef" data-color="#f5f3ef" data-target="text" title="Light"></div>
+          <div class="color-swatch" style="background:#2563eb" data-color="#2563eb" data-target="text" title="Blue"></div>
+          <div class="color-swatch" style="background:#d94f3d" data-color="#d94f3d" data-target="text" title="Red"></div>
+          <div class="color-swatch" style="background:#2d7d52" data-color="#2d7d52" data-target="text" title="Green"></div>
+          <div class="color-swatch" style="background:#c9a96e" data-color="#c9a96e" data-target="text" title="Gold"></div>
+        </div>
+        <div class="color-custom">
+          <input type="color" id="textCustom" value="#1a1814">
+          <label>Custom</label>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Font Family</span>
+        <select class="font-select" id="fontSelect">
+          <option value="Georgia, serif">Georgia (Serif)</option>
+          <option value="'Playfair Display', Georgia, serif">Playfair Display</option>
+          <option value="'DM Sans', system-ui, sans-serif">DM Sans</option>
+          <option value="'Syne', system-ui, sans-serif">Syne</option>
+          <option value="'Courier New', monospace">Courier New (Mono)</option>
+          <option value="Garamond, 'Times New Roman', serif">Garamond</option>
+          <option value="Helvetica, Arial, sans-serif">Helvetica</option>
+          <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+        </select>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Content Width</span>
+        <select class="select-input" id="widthSelect">
+          <option value="680px">Narrow (680px)</option>
+          <option value="860px" selected>Medium (860px)</option>
+          <option value="1100px">Wide (1100px)</option>
+          <option value="100%">Full Width</option>
+        </select>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Font Size</span>
+        <div class="range-row">
+          <input type="range" id="fontSizeRange" min="12" max="22" value="16" step="1">
+          <span class="range-val" id="fontSizeVal">16px</span>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Line Height</span>
+        <div class="range-row">
+          <input type="range" id="lineHeightRange" min="1.2" max="2.2" value="1.7" step="0.1">
+          <span class="range-val" id="lineHeightVal">1.7</span>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <span class="theme-label">Page Padding</span>
+        <div class="range-row">
+          <input type="range" id="paddingRange" min="0" max="80" value="32" step="4">
+          <span class="range-val" id="paddingVal">32px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGES PANEL -->
+    <div class="sidebar-panel" id="tab-pages">
+      <div id="pageList"></div>
+      <button class="add-page-btn" id="addPageBtn">+ Add Page</button>
+    </div>
+  </div>
+
+  <!-- MAIN EDITOR AREA -->
+  <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+    <div id="toolbar-wrap">
+      <div id="toolbar">
+        <select class="tb-select" id="blockFormatSelect">
+          <option value="p">Paragraph</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+          <option value="h4">Heading 4</option>
+          <option value="blockquote">Quote</option>
+          <option value="pre">Code</option>
+        </select>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbBold" title="Bold"><b>B</b></button>
+        <button class="tb-btn" id="tbItalic" title="Italic"><i>I</i></button>
+        <button class="tb-btn" id="tbUnderline" title="Underline"><u>U</u></button>
+        <button class="tb-btn" id="tbStrike" title="Strikethrough"><s>S</s></button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbUL" title="Bullet list">≡</button>
+        <button class="tb-btn" id="tbOL" title="Numbered list">⋮</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbAlignL" title="Align left">⬤◻◻</button>
+        <button class="tb-btn" id="tbAlignC" title="Center">◻⬤◻</button>
+        <button class="tb-btn" id="tbAlignR" title="Align right">◻◻⬤</button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbLink" title="Insert link">🔗</button>
+        <button class="tb-btn" id="tbImg" title="Insert image">🖼</button>
+        <div class="tb-sep"></div>
+        <input type="color" class="tb-color" id="tbTextColor" title="Text color" value="#1a1814">
+        <input type="color" class="tb-color" id="tbBgColor" title="Highlight color" value="#ffffff">
+        <div class="tb-sep"></div>
+        <button class="tb-btn" id="tbUndo" title="Undo">↩</button>
+        <button class="tb-btn" id="tbRedo" title="Redo">↪</button>
+      </div>
+    </div>
+
+    <div id="canvas-wrap">
+      <div id="preview-frame">
+        <div id="canvas" contenteditable="true" spellcheck="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PROPS PANEL -->
+  <div id="props-panel">
+    <div class="props-header"><div class="props-title">Properties</div></div>
+    <div class="props-body" id="propsBody">
+      <div class="prop-empty">Select a block to edit its properties.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LINK MODAL -->
+<div class="modal-overlay" id="linkModal">
+  <div class="modal">
+    <h3>Insert Link</h3>
+    <input type="text" id="linkText" placeholder="Link text">
+    <input type="url" id="linkUrl" placeholder="https://…">
+    <div class="modal-btns">
+      <button class="btn-sm" id="linkCancel">Cancel</button>
+      <button class="btn-sm btn-primary" id="linkInsert">Insert</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="modal-overlay" id="imgModal">
+  <div class="modal" style="max-width:520px;">
+    <h3>Insert Image</h3>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:1rem;">
+      <button class="img-tab active" id="imgTabUpload" style="flex:1;padding:0.45rem;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border:none;cursor:pointer;background:var(--accent);color:var(--accent-inv);transition:all 0.15s;">Upload File</button>
+      <button class="img-tab" id="imgTabUrl" style="flex:1;padding:0.45rem;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border:none;cursor:pointer;background:var(--bg);color:var(--muted);transition:all 0.15s;">From URL</button>
+    </div>
+
+    <!-- Upload panel -->
+    <div id="imgPanelUpload">
+      <div id="imgDropZone" style="border:2px dashed var(--border);border-radius:6px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:0.75rem;position:relative;">
+        <input type="file" id="imgFile" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">
+        <div id="imgDropContent">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">🖼</div>
+          <div style="font-size:0.88rem;font-weight:500;color:var(--text);margin-bottom:0.25rem;">Drop image here or click to browse</div>
+          <div style="font-size:0.75rem;color:var(--muted);">PNG, JPG, GIF, WebP supported</div>
+        </div>
+        <div id="imgPreviewWrap" style="display:none;">
+          <img id="imgPreview" style="max-width:100%;max-height:180px;border-radius:4px;object-fit:contain;">
+          <div id="imgPreviewName" style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem;"></div>
+          <button id="imgPreviewClear" style="font-size:0.72rem;color:var(--red);background:none;border:none;cursor:pointer;margin-top:0.25rem;">✕ Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- URL panel -->
+    <div id="imgPanelUrl" style="display:none;">
+      <input type="url" id="imgUrl" placeholder="https://example.com/image.jpg" style="margin-bottom:0.75rem;">
+      <div id="imgUrlPreviewWrap" style="display:none;margin-bottom:0.75rem;">
+        <img id="imgUrlPreview" style="max-width:100%;max-height:160px;border-radius:4px;object-fit:contain;border:1px solid var(--border);">
+      </div>
+    </div>
+
+    <!-- Alt text (shared) -->
+    <input type="text" id="imgAlt" placeholder="Alt text (optional, good for accessibility)">
+
+    <div class="modal-btns">
+      <button class="btn-sm" id="imgCancel">Cancel</button>
+      <button class="btn-sm btn-primary" id="imgInsert">Insert Image</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE NAME MODAL -->
+<div class="modal-overlay" id="pageModal">
+  <div class="modal">
+    <h3>New Page</h3>
+    <input type="text" id="pageNameInput" placeholder="Page name (e.g. About)">
+    <div class="modal-btns">
+      <button class="btn-sm" id="pageCancel">Cancel</button>
+      <button class="btn-sm btn-primary" id="pageCreate">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW MODAL -->
+<div class="modal-overlay" id="previewModal" style="align-items:stretch;padding:1rem;">
+  <div style="background:#fff;border-radius:8px;display:flex;flex-direction:column;width:100%;max-width:960px;margin:auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-bottom:1px solid var(--border);background:var(--panel);">
+      <span style="font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Preview</span>
+      <button class="btn-sm" id="previewClose">Close</button>
+    </div>
+    <iframe id="previewIframe" style="flex:1;border:none;min-height:500px;"></iframe>
+  </div>
+</div>
+
+<!-- POST READER MODAL -->
+<div id="postReaderModal">
+  <div id="postReaderInner">
+    <button id="postReaderClose">&#215;</button>
+    <img id="postReaderHero" src="" alt="">
+    <div id="postReaderToolbar">
+      <button class="pr-btn" id="prBold"><b>B</b></button>
+      <button class="pr-btn" id="prItalic"><i>I</i></button>
+      <button class="pr-btn" id="prUnderline"><u>U</u></button>
+      <div class="pr-sep"></div>
+      <button class="pr-btn" id="prH2">H2</button>
+      <button class="pr-btn" id="prH3">H3</button>
+      <button class="pr-btn" id="prQuote">&ldquo;</button>
+      <div class="pr-sep"></div>
+      <button class="pr-btn" id="prUL">&#8226; List</button>
+      <button class="pr-btn" id="prOL">1. List</button>
+      <div class="pr-sep"></div>
+      <button class="pr-img-upload-btn" id="prImgBtn">&#128444; Change Cover</button>
+      <input type="file" id="prImgFile" accept="image/*" style="display:none;">
+      <div class="pr-sep"></div>
+      <button class="pr-btn" id="prUndo">&#8617;</button>
+      <button class="pr-btn" id="prRedo">&#8618;</button>
+      <div class="pr-sep"></div>
+      <span style="font-size:0.65rem;color:#888;font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-right:4px;">Theme</span>
+      <button class="pr-theme-swatch active" data-bg="#ffffff" data-color="#1a1814" title="Light" style="background:#ffffff;border:2px solid #1a1814;"></button>
+      <button class="pr-theme-swatch" data-bg="#0d0d0e" data-color="#f5f3ef" title="Dark" style="background:#0d0d0e;border:2px solid transparent;"></button>
+      <button class="pr-theme-swatch" data-bg="#f5f0e8" data-color="#3b2f1e" title="Sepia" style="background:#f5f0e8;border:2px solid transparent;"></button>
+      <button class="pr-theme-swatch" data-bg="#1a2744" data-color="#e8edf5" title="Navy" style="background:#1a2744;border:2px solid transparent;"></button>
+      <input type="color" id="prCustomBg" value="#ffffff" title="Custom background" style="width:22px;height:22px;padding:1px;border:1px solid #ddd;border-radius:3px;cursor:pointer;background:none;margin-left:4px;">
+      <input type="color" id="prCustomText" value="#1a1814" title="Custom text color" style="width:22px;height:22px;padding:1px;border:1px solid #ddd;border-radius:3px;cursor:pointer;background:none;margin-left:2px;">
+    </div>
+    <div id="postReaderBody">
+      <div id="postReaderTitle" contenteditable="true" data-placeholder="Post title…"></div>
+      <div id="postReaderContent" contenteditable="true"></div>
+    </div>
+    <div id="postReaderSaveBadge">Changes saved automatically</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+'use strict';
+
+// ── STATE ──
+var state = {
+  pages: [{ id: 'home', name: 'Home', content: '' }],
+  activePage: 'home',
+  theme: {
+    bg: '#ffffff',
+    color: '#1a1814',
+    font: 'Georgia, serif',
+    fontSize: '16px',
+    lineHeight: '1.7',
+    padding: '32px',
+    maxWidth: '860px'
+  }
+};
+
+// ── DOM REFS ──
+var canvas = document.getElementById('canvas');
+var pageTabs = document.getElementById('pageTabs');
+var pageList = document.getElementById('pageList');
+var propsBody = document.getElementById('propsBody');
+var blockFormatSelect = document.getElementById('blockFormatSelect');
+
+// ── BLOCK TEMPLATES ──
+var blockTemplates = {
+  hero: function() {
+    return '<div data-block="hero" class="hero-block" contenteditable="true">' +
+      '<h1>Your Headline Here</h1>' +
+      '<p>Write a compelling subtitle that explains what you do or offer.</p>' +
+      '<a class="hero-btn" href="#">Get Started</a>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up" title="Move up">↑</button>' +
+        '<button class="bc-btn" data-action="down" title="Move down">↓</button>' +
+        '<button class="bc-btn" data-action="delete" title="Delete">✕</button>' +
+      '</div></div>';
+  },
+  nav: function() {
+    return '<div data-block="nav" class="nav-block" contenteditable="true">' +
+      '<span class="nav-logo">Your Brand</span>' +
+      '<div class="nav-links"><span>Home</span><span>About</span><span>Contact</span></div>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  heading: function() {
+    return '<div data-block="heading" contenteditable="true">' +
+      '<h2>Section Heading</h2>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  text: function() {
+    return '<div data-block="text" contenteditable="true">' +
+      '<p>Click here to start writing. You can edit this text directly and use the toolbar above to format it.</p>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  image: function() {
+    return '<div data-block="image" class="img-block">' +
+      '<img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=860&q=80" alt="Image">' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  cols2: function() {
+    return '<div data-block="cols2" class="cols-block">' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Left column content</p></div>' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Right column content</p></div>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  cols3: function() {
+    return '<div data-block="cols3" class="cols-block-3">' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Column one</p></div>' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Column two</p></div>' +
+      '<div contenteditable="true" style="min-height:60px;"><p>Column three</p></div>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  card: function() {
+    return '<div data-block="card" class="card-block" contenteditable="true">' +
+      '<h3>Card Title</h3><p>Card content goes here. Great for features, testimonials, or highlights.</p>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  quote: function() {
+    return '<div data-block="quote" contenteditable="true">' +
+      '<blockquote>A memorable quote or highlighted insight goes here.</blockquote>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  divider: function() {
+    return '<div data-block="divider" class="divider-block"><hr>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  spacer: function() {
+    return '<div data-block="spacer" class="spacer-block">' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  footer: function() {
+    return '<div data-block="footer" class="footer-block" contenteditable="true">' +
+      '<p>© 2024 Your Brand. All rights reserved.</p>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div></div>';
+  },
+  postcard: function() {
+    var id = 'post-' + Date.now();
+    return '<div class="postcard-item" data-post-id="' + id + '">' +
+      '<div class="postcard-img-wrap">' +
+        '<img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=860&q=80" alt="Post image" class="postcard-img">' +
+      '</div>' +
+      '<div class="postcard-meta">' +
+        '<div class="postcard-title" contenteditable="true">Post Title</div>' +
+      '</div>' +
+      '<div class="postcard-item-controls">' +
+        '<button class="pci-btn" data-action="edit-post" title="Edit article">✏ Edit</button>' +
+        '<button class="pci-btn pci-del" data-action="delete-card" title="Remove card">✕</button>' +
+      '</div>' +
+      '<div class="postcard-content" style="display:none"><p>Write your article content here.</p></div>' +
+    '</div>';
+  },
+  photocaption: function() {
+    var pcItem = function() {
+      return '<div class="photocaption-item">' +
+        '<div class="photocaption-img-wrap">' +
+          '<img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=860&q=80" alt="Photo" class="photocaption-img">' +
+        '</div>' +
+        '<div class="photocaption-meta">' +
+          '<a class="photocaption-link" href="#" data-href="#" contenteditable="true">Caption / link text</a>' +
+        '</div>' +
+        '<div class="photocaption-item-controls">' +
+          '<button class="pci-btn" data-action="edit-photo">✏ Edit</button>' +
+          '<button class="pci-btn pci-del" data-action="delete-photo">✕</button>' +
+        '</div>' +
+      '</div>';
+    };
+    blockTemplates._photocaptionItem = pcItem;
+    return '<div data-block="photocaption" class="photocaption-grid-block">' +
+      '<div class="photocaption-grid">' + pcItem() + '</div>' +
+      '<div class="photocaption-grid-footer">' +
+        '<button class="add-photo-btn" data-action="add-photo">+ Add Photo</button>' +
+      '</div>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div>' +
+    '</div>';
+  },
+  postcardgrid: function() {
+    var id = 'post-' + Date.now();
+    return '<div data-block="postcardgrid" class="postcard-grid-block">' +
+      '<div class="postcard-grid">' +
+        '<div class="postcard-item" data-post-id="' + id + '">' +
+          '<div class="postcard-img-wrap">' +
+            '<img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=860&q=80" alt="Post image" class="postcard-img">' +
+          '</div>' +
+          '<div class="postcard-meta">' +
+            '<div class="postcard-title" contenteditable="true">Post Title</div>' +
+          '</div>' +
+          '<div class="postcard-item-controls">' +
+            '<button class="pci-btn" data-action="edit-post" title="Edit article">✏ Edit</button>' +
+            '<button class="pci-btn pci-del" data-action="delete-card" title="Remove card">✕</button>' +
+          '</div>' +
+          '<div class="postcard-content" style="display:none"><p>Write your article content here.</p></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="postcard-grid-footer">' +
+        '<button class="add-card-btn" data-action="add-card">+ Add Post Card</button>' +
+      '</div>' +
+      '<div class="block-controls">' +
+        '<button class="bc-btn" data-action="up">↑</button>' +
+        '<button class="bc-btn" data-action="down">↓</button>' +
+        '<button class="bc-btn" data-action="delete">✕</button>' +
+      '</div>' +
+    '</div>';
+  }
+};
+
+// ── APPLY THEME ──
+function applyTheme() {
+  var t = state.theme;
+  canvas.style.setProperty('--cbg', t.bg);
+  canvas.style.setProperty('--cc', t.color);
+  canvas.style.setProperty('--cf', t.font);
+  canvas.style.backgroundColor = t.bg;
+  canvas.style.color = t.color;
+  canvas.style.fontFamily = t.font;
+  canvas.style.fontSize = t.fontSize;
+  canvas.style.lineHeight = t.lineHeight;
+  canvas.style.padding = t.padding;
+  canvas.style.maxWidth = t.maxWidth;
+  canvas.style.margin = '0 auto';
+}
+
+// ── RENDER PAGES ──
+function renderPageTabs() {
+  pageTabs.innerHTML = '';
+  state.pages.forEach(function(page) {
+    var btn = document.createElement('button');
+    btn.className = 'page-tab' + (page.id === state.activePage ? ' active' : '');
+    btn.textContent = page.name;
+    btn.addEventListener('click', function() { switchPage(page.id); });
+    pageTabs.appendChild(btn);
+  });
+  var add = document.createElement('button');
+  add.className = 'page-tab-add';
+  add.textContent = '+';
+  add.title = 'Add page';
+  add.addEventListener('click', function() { openModal('pageModal'); });
+  pageTabs.appendChild(add);
+}
+
+function renderPageList() {
+  pageList.innerHTML = '';
+  state.pages.forEach(function(page) {
+    var item = document.createElement('div');
+    item.className = 'page-item' + (page.id === state.activePage ? ' active' : '');
+    item.innerHTML = '<span class="page-item-name">' + page.name + '</span>';
+    if (state.pages.length > 1) {
+      var del = document.createElement('button');
+      del.className = 'page-del';
+      del.textContent = '✕';
+      del.title = 'Delete page';
+      del.addEventListener('click', function(e) { e.stopPropagation(); deletePage(page.id); });
+      item.appendChild(del);
+    }
+    item.addEventListener('click', function() { switchPage(page.id); });
+    pageList.appendChild(item);
+  });
+}
+
+function switchPage(id) {
+  saveCurrent();
+  state.activePage = id;
+  var page = state.pages.find(function(p) { return p.id === id; });
+  canvas.innerHTML = page ? page.content : '';
+  renderPageTabs();
+  renderPageList();
+  clearSelection();
+}
+
+function saveCurrent() {
+  var page = state.pages.find(function(p) { return p.id === state.activePage; });
+  if (page) page.content = canvas.innerHTML;
+}
+
+function deletePage(id) {
+  if (state.pages.length <= 1) return;
+  state.pages = state.pages.filter(function(p) { return p.id !== id; });
+  if (state.activePage === id) state.activePage = state.pages[0].id;
+  switchPage(state.activePage);
+}
+
+// ── BLOCK INSERTION ──
+function insertBlock(type) {
+  var tmpl = blockTemplates[type];
+  if (!tmpl) return;
+  var div = document.createElement('div');
+  div.innerHTML = tmpl();
+  var block = div.firstChild;
+  canvas.appendChild(block);
+  block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  showToast('Block added');
+}
+
+// ── BLOCK CONTROLS ──
+canvas.addEventListener('click', function(e) {
+  var actionBtn = e.target.closest('[data-action]');
+  if (actionBtn) {
+    e.preventDefault(); e.stopPropagation();
+    var block = actionBtn.closest('[data-block]');
+    var action = actionBtn.getAttribute('data-action');
+    if (action === 'delete') { block.remove(); clearSelection(); saveCurrent(); }
+    else if (action === 'up' && block.previousElementSibling) { canvas.insertBefore(block, block.previousElementSibling); }
+    else if (action === 'down' && block.nextElementSibling) { canvas.insertBefore(block.nextElementSibling, block); }
+    else if (action === 'add-card') {
+      var grid = block.closest('[data-block="postcardgrid"]').querySelector('.postcard-grid');
+      var newCard = document.createElement('div');
+      newCard.innerHTML = blockTemplates.postcard();
+      grid.appendChild(newCard.firstChild);
+      saveCurrent();
+      return;
+    } else if (action === 'add-photo') {
+      var pgrid = block.closest('[data-block="photocaption"]').querySelector('.photocaption-grid');
+      var tmpl = blockTemplates._photocaptionItem || (function(){
+        return '<div class="photocaption-item"><div class="photocaption-img-wrap"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=860&q=80" alt="Photo" class="photocaption-img"></div><div class="photocaption-meta"><a class="photocaption-link" href="#" data-href="#" contenteditable="true">Caption / link text</a></div><div class="photocaption-item-controls"><button class="pci-btn" data-action="edit-photo">✏ Edit</button><button class="pci-btn pci-del" data-action="delete-photo">✕</button></div></div>';
+      })();
+      var newPhotoEl = document.createElement('div');
+      newPhotoEl.innerHTML = typeof tmpl === 'function' ? tmpl() : tmpl;
+      pgrid.appendChild(newPhotoEl.firstChild);
+      saveCurrent();
+      return;
+    }
+    return;
+  }
+  // Per-card/photo actions
+  var cardAction = e.target.closest('[data-action]');
+  if (cardAction) {
+    var act = cardAction.getAttribute('data-action');
+    var cardItem = cardAction.closest('.postcard-item');
+    var photoItem = cardAction.closest('.photocaption-item');
+    if (act === 'edit-post' && cardItem) { openPostReader(cardItem); return; }
+    if (act === 'delete-card' && cardItem) {
+      if (confirm('Delete this post card?')) { cardItem.remove(); saveCurrent(); }
+      return;
+    }
+    if (act === 'edit-photo' && photoItem) { openPhotoEditor(photoItem); return; }
+    if (act === 'delete-photo' && photoItem) {
+      if (confirm('Delete this photo?')) { photoItem.remove(); saveCurrent(); }
+      return;
+    }
+  }
+  // Clicking the postcard overlay/image opens reader
+  if (e.target.closest('.postcard-overlay, .postcard-img-wrap')) {
+    var cardItem = e.target.closest('.postcard-item');
+    if (cardItem) { openPostReader(cardItem); return; }
+  }
+  var block = e.target.closest('[data-block]');
+  selectBlock(block);
+});
+
+var selectedBlock = null;
+function selectBlock(block) {
+  document.querySelectorAll('#canvas [data-block]').forEach(function(b) { b.classList.remove('selected'); });
+  selectedBlock = block;
+  if (block) {
+    block.classList.add('selected');
+    renderProps(block);
+  } else {
+    clearSelection();
+  }
+}
+
+function clearSelection() {
+  document.querySelectorAll('#canvas [data-block]').forEach(function(b) { b.classList.remove('selected'); });
+  selectedBlock = null;
+  propsBody.innerHTML = '<div class="prop-empty">Select a block to edit its properties.</div>';
+}
+
+// ── PROPERTIES PANEL ──
+function renderProps(block) {
+  var type = block.getAttribute('data-block');
+  var html = '<div class="prop-row"><span class="prop-label">Block Type</span><input class="prop-input" value="' + type + '" readonly></div>';
+
+  // Background color prop
+  var bg = block.style.backgroundColor || '';
+  html += '<div class="prop-row"><span class="prop-label">Background</span><input type="color" class="prop-color" id="propBg" value="' + (bg ? rgbToHex(bg) : '#ffffff') + '"></div>';
+
+  // Padding prop
+  var pad = block.style.padding || '';
+  html += '<div class="prop-row"><span class="prop-label">Padding</span><input class="prop-input" id="propPad" value="' + pad + '" placeholder="e.g. 2rem"></div>';
+
+  // Border radius
+  var br = block.style.borderRadius || '';
+  html += '<div class="prop-row"><span class="prop-label">Border Radius</span><input class="prop-input" id="propBr" value="' + br + '" placeholder="e.g. 8px"></div>';
+
+  // Text align
+  var ta = block.style.textAlign || 'left';
+  html += '<div class="prop-row"><span class="prop-label">Text Align</span><select class="prop-input" id="propAlign"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></div>';
+
+  // Image src if image block
+  if (type === 'image') {
+    var img = block.querySelector('img');
+    if (img) {
+      html += '<div class="prop-row"><span class="prop-label">Replace Image</span>' +
+        '<button class="prop-input" id="propImgUploadBtn" style="cursor:pointer;text-align:left;background:var(--bg);color:var(--muted);font-size:0.8rem;">📁 Upload from computer…</button>' +
+        '<input type="file" id="propImgFile" accept="image/*" style="display:none;">' +
+        '</div>';
+      html += '<div class="prop-row"><span class="prop-label">Or Image URL</span><input class="prop-input" id="propImgSrc" placeholder="https://…" value="' + (img.src && !img.src.startsWith('data:') ? img.src : '') + '"></div>';
+      html += '<div class="prop-row"><span class="prop-label">Alt Text</span><input class="prop-input" id="propImgAlt" value="' + (img.alt || '') + '"></div>';
+    }
+  }
+
+  propsBody.innerHTML = html;
+
+  // Restore align select
+  var alignSel = document.getElementById('propAlign');
+  if (alignSel) { alignSel.value = ta; alignSel.addEventListener('change', function() { block.style.textAlign = this.value; }); }
+
+  var bgInput = document.getElementById('propBg');
+  if (bgInput) bgInput.addEventListener('input', function() { block.style.backgroundColor = this.value; });
+
+  var padInput = document.getElementById('propPad');
+  if (padInput) padInput.addEventListener('change', function() { block.style.padding = this.value; });
+
+  var brInput = document.getElementById('propBr');
+  if (brInput) brInput.addEventListener('change', function() { block.style.borderRadius = this.value; });
+
+  // Photocaption block props
+  if (type === 'photocaption') {
+    var pcImg = block.querySelector('.photocaption-img');
+    var pcLink = block.querySelector('.photocaption-link');
+    html += '<div class="prop-row"><span class="prop-label">Caption Text</span>' +
+      '<input class="prop-input" id="propCaptionText" value="' + (pcLink ? pcLink.textContent.trim() : '') + '"></div>';
+    html += '<div class="prop-row"><span class="prop-label">Link URL</span>' +
+      '<input class="prop-input" id="propCaptionUrl" value="' + (pcLink ? (pcLink.getAttribute('data-href') || '#') : '#') + '" placeholder="https://…"></div>';
+    html += '<div class="prop-row"><span class="prop-label">Open in</span>' +
+      '<select class="prop-input" id="propCaptionTarget"><option value="_self">Same tab</option><option value="_blank">New tab</option></select></div>';
+    html += '<div class="prop-row"><span class="prop-label">Replace Image</span>' +
+      '<button class="prop-input" id="propPcUploadBtn" style="cursor:pointer;text-align:left;background:var(--bg);color:var(--muted);font-size:0.8rem;">📁 Upload from computer…</button>' +
+      '<input type="file" id="propPcImgFile" accept="image/*" style="display:none;"></div>';
+    html += '<div class="prop-row"><span class="prop-label">Or Image URL</span>' +
+      '<input class="prop-input" id="propPcImgSrc" placeholder="https://…" value="' + (pcImg && !pcImg.src.startsWith('data:') ? pcImg.src : '') + '"></div>';
+  }
+
+  propsBody.innerHTML = html;
+
+  // Photocaption prop handlers
+  if (type === 'photocaption') {
+    var pcLink2 = block.querySelector('.photocaption-link');
+    var pcImg2 = block.querySelector('.photocaption-img');
+
+    var captionText = document.getElementById('propCaptionText');
+    if (captionText) captionText.addEventListener('input', function() {
+      if (pcLink2) pcLink2.textContent = this.value;
+    });
+
+    var captionUrl = document.getElementById('propCaptionUrl');
+    if (captionUrl) captionUrl.addEventListener('change', function() {
+      if (pcLink2) { pcLink2.setAttribute('data-href', this.value); pcLink2.setAttribute('href', this.value); }
+    });
+
+    var captionTarget = document.getElementById('propCaptionTarget');
+    if (captionTarget) {
+      if (pcLink2) captionTarget.value = pcLink2.getAttribute('target') || '_self';
+      captionTarget.addEventListener('change', function() {
+        if (pcLink2) pcLink2.setAttribute('target', this.value);
+      });
+    }
+
+    var pcUploadBtn = document.getElementById('propPcUploadBtn');
+    var pcImgFile = document.getElementById('propPcImgFile');
+    if (pcUploadBtn && pcImgFile) {
+      pcUploadBtn.addEventListener('click', function() { pcImgFile.click(); });
+      pcImgFile.addEventListener('change', function() {
+        var file = this.files[0]; if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          if (pcImg2) { pcImg2.src = e.target.result; pcUploadBtn.textContent = '✓ ' + file.name; pcUploadBtn.style.color = 'var(--green)'; }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    var pcSrcInput = document.getElementById('propPcImgSrc');
+    if (pcSrcInput) pcSrcInput.addEventListener('change', function() { if (pcImg2) pcImg2.src = this.value; });
+    return; // props already set up
+  }
+
+  // Image block prop handlers
+  var propUploadBtn = document.getElementById('propImgUploadBtn');
+  var propImgFile = document.getElementById('propImgFile');
+  if (propUploadBtn && propImgFile) {
+    propUploadBtn.addEventListener('click', function() { propImgFile.click(); });
+    propImgFile.addEventListener('change', function() {
+      var file = this.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var imgEl = block.querySelector('img');
+        if (imgEl) {
+          imgEl.src = e.target.result;
+          propUploadBtn.textContent = '✓ ' + file.name;
+          propUploadBtn.style.color = 'var(--green)';
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  var srcInput = document.getElementById('propImgSrc');
+  if (srcInput) srcInput.addEventListener('change', function() { var imgEl = block.querySelector('img'); if(imgEl) imgEl.src = this.value; });
+
+  var altInput = document.getElementById('propImgAlt');
+  if (altInput) altInput.addEventListener('change', function() { var imgEl = block.querySelector('img'); if(imgEl) imgEl.alt = this.value; });
+}
+
+function rgbToHex(rgb) {
+  var result = rgb.match(/\d+/g);
+  if (!result) return '#ffffff';
+  return '#' + result.slice(0,3).map(function(n) { return ('0' + parseInt(n).toString(16)).slice(-2); }).join('');
+}
+
+// ── DRAG & DROP FROM PALETTE ──
+var dragType = null;
+
+document.querySelectorAll('.block-item').forEach(function(item) {
+  item.addEventListener('dragstart', function(e) {
+    dragType = item.getAttribute('data-block-type');
+    e.dataTransfer.effectAllowed = 'copy';
+  });
+  item.addEventListener('dragend', function() { dragType = null; });
+});
+
+canvas.addEventListener('dragover', function(e) {
+  if (!dragType) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+});
+
+canvas.addEventListener('drop', function(e) {
+  if (!dragType) return;
+  e.preventDefault();
+  insertBlock(dragType);
+  dragType = null;
+});
+
+// ── BLOCK PALETTE CLICK ──
+document.querySelectorAll('.block-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    insertBlock(item.getAttribute('data-block-type'));
+  });
+});
+
+// ── SIDEBAR TABS ──
+document.querySelectorAll('.stab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.stab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.sidebar-panel').forEach(function(p) { p.classList.remove('active'); });
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.getAttribute('data-tab')).classList.add('active');
+  });
+});
+
+// ── THEME CONTROLS ──
+function setupSwatches(selector, target) {
+  document.querySelectorAll(selector).forEach(function(sw) {
+    sw.addEventListener('click', function() {
+      document.querySelectorAll(selector).forEach(function(s) { s.classList.remove('active'); });
+      sw.classList.add('active');
+      state.theme[target] = sw.getAttribute('data-color');
+      applyTheme();
+    });
+  });
+}
+setupSwatches('[data-target="bg"]', 'bg');
+setupSwatches('[data-target="text"]', 'color');
+
+document.getElementById('bgCustom').addEventListener('input', function() {
+  state.theme.bg = this.value;
+  document.querySelectorAll('[data-target="bg"]').forEach(function(s) { s.classList.remove('active'); });
+  applyTheme();
+});
+
+document.getElementById('textCustom').addEventListener('input', function() {
+  state.theme.color = this.value;
+  document.querySelectorAll('[data-target="text"]').forEach(function(s) { s.classList.remove('active'); });
+  applyTheme();
+});
+
+document.getElementById('fontSelect').addEventListener('change', function() {
+  state.theme.font = this.value;
+  applyTheme();
+});
+
+document.getElementById('widthSelect').addEventListener('change', function() {
+  state.theme.maxWidth = this.value;
+  applyTheme();
+});
+
+function setupRange(rangeId, valId, themeKey, unit) {
+  var range = document.getElementById(rangeId);
+  var val = document.getElementById(valId);
+  range.addEventListener('input', function() {
+    var v = this.value + (unit || '');
+    val.textContent = v;
+    state.theme[themeKey] = v;
+    applyTheme();
+  });
+}
+setupRange('fontSizeRange', 'fontSizeVal', 'fontSize', 'px');
+setupRange('lineHeightRange', 'lineHeightVal', 'lineHeight', '');
+setupRange('paddingRange', 'paddingVal', 'padding', 'px');
+
+// ── TOOLBAR ACTIONS ──
+function tbCmd(cmd, val) {
+  canvas.focus();
+  document.execCommand(cmd, false, val || null);
+}
+
+document.getElementById('tbBold').addEventListener('click', function() { tbCmd('bold'); });
+document.getElementById('tbItalic').addEventListener('click', function() { tbCmd('italic'); });
+document.getElementById('tbUnderline').addEventListener('click', function() { tbCmd('underline'); });
+document.getElementById('tbStrike').addEventListener('click', function() { tbCmd('strikeThrough'); });
+document.getElementById('tbUL').addEventListener('click', function() { tbCmd('insertUnorderedList'); });
+document.getElementById('tbOL').addEventListener('click', function() { tbCmd('insertOrderedList'); });
+document.getElementById('tbAlignL').addEventListener('click', function() { tbCmd('justifyLeft'); });
+document.getElementById('tbAlignC').addEventListener('click', function() { tbCmd('justifyCenter'); });
+document.getElementById('tbAlignR').addEventListener('click', function() { tbCmd('justifyRight'); });
+document.getElementById('tbUndo').addEventListener('click', function() { tbCmd('undo'); });
+document.getElementById('tbRedo').addEventListener('click', function() { tbCmd('redo'); });
+
+document.getElementById('tbTextColor').addEventListener('input', function() { tbCmd('foreColor', this.value); });
+document.getElementById('tbBgColor').addEventListener('input', function() { tbCmd('hiliteColor', this.value); });
+
+blockFormatSelect.addEventListener('change', function() {
+  tbCmd('formatBlock', '<' + this.value + '>');
+});
+
+// ── LINK MODAL ──
+var savedRange = null;
+document.getElementById('tbLink').addEventListener('click', function() {
+  var sel = window.getSelection();
+  if (sel.rangeCount) savedRange = sel.getRangeAt(0).cloneRange();
+  var selText = sel.toString();
+  document.getElementById('linkText').value = selText;
+  document.getElementById('linkUrl').value = '';
+  openModal('linkModal');
+});
+document.getElementById('linkCancel').addEventListener('click', function() { closeModal('linkModal'); });
+document.getElementById('linkInsert').addEventListener('click', function() {
+  var url = document.getElementById('linkUrl').value.trim();
+  var text = document.getElementById('linkText').value.trim();
+  if (!url) return;
+  canvas.focus();
+  if (savedRange) {
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedRange);
+  }
+  tbCmd('createLink', url);
+  closeModal('linkModal');
+  savedRange = null;
+});
+
+// ── IMAGE MODAL ──
+var imgMode = 'upload'; // 'upload' | 'url'
+var imgFileData = null; // base64 data URL of selected file
+
+function resetImgModal() {
+  imgFileData = null;
+  document.getElementById('imgFile').value = '';
+  document.getElementById('imgUrl').value = '';
+  document.getElementById('imgAlt').value = '';
+  document.getElementById('imgPreviewWrap').style.display = 'none';
+  document.getElementById('imgDropContent').style.display = 'block';
+  document.getElementById('imgUrlPreviewWrap').style.display = 'none';
+  document.getElementById('imgDropZone').style.borderColor = 'var(--border)';
+  document.getElementById('imgDropZone').style.background = '';
+}
+
+function switchImgTab(mode) {
+  imgMode = mode;
+  var isUpload = mode === 'upload';
+  document.getElementById('imgPanelUpload').style.display = isUpload ? 'block' : 'none';
+  document.getElementById('imgPanelUrl').style.display = isUpload ? 'none' : 'block';
+  document.getElementById('imgTabUpload').style.background = isUpload ? 'var(--accent)' : 'var(--bg)';
+  document.getElementById('imgTabUpload').style.color = isUpload ? 'var(--accent-inv)' : 'var(--muted)';
+  document.getElementById('imgTabUrl').style.background = isUpload ? 'var(--bg)' : 'var(--accent)';
+  document.getElementById('imgTabUrl').style.color = isUpload ? 'var(--muted)' : 'var(--accent-inv)';
+}
+
+document.getElementById('imgTabUpload').addEventListener('click', function() { switchImgTab('upload'); });
+document.getElementById('imgTabUrl').addEventListener('click', function() { switchImgTab('url'); });
+
+// File selection / drag-drop
+function handleImageFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    imgFileData = e.target.result;
+    document.getElementById('imgPreview').src = imgFileData;
+    document.getElementById('imgPreviewName').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+    document.getElementById('imgPreviewWrap').style.display = 'block';
+    document.getElementById('imgDropContent').style.display = 'none';
+    document.getElementById('imgDropZone').style.borderColor = 'var(--green)';
+    document.getElementById('imgDropZone').style.background = 'rgba(45,125,82,0.04)';
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('imgFile').addEventListener('change', function() {
+  handleImageFile(this.files[0]);
+});
+
+document.getElementById('imgPreviewClear').addEventListener('click', function(e) {
+  e.stopPropagation();
+  resetImgModal();
+});
+
+// Drag over/drop on zone
+var dropZone = document.getElementById('imgDropZone');
+dropZone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  this.style.borderColor = 'var(--blue)';
+  this.style.background = 'rgba(37,99,235,0.04)';
+});
+dropZone.addEventListener('dragleave', function() {
+  if (!imgFileData) {
+    this.style.borderColor = 'var(--border)';
+    this.style.background = '';
+  }
+});
+dropZone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  var file = e.dataTransfer.files[0];
+  handleImageFile(file);
+});
+
+// URL preview on blur/enter
+document.getElementById('imgUrl').addEventListener('input', function() {
+  var url = this.value.trim();
+  var wrap = document.getElementById('imgUrlPreviewWrap');
+  var preview = document.getElementById('imgUrlPreview');
+  if (url) {
+    preview.src = url;
+    preview.onload = function() { wrap.style.display = 'block'; };
+    preview.onerror = function() { wrap.style.display = 'none'; };
+  } else {
+    wrap.style.display = 'none';
+  }
+});
+
+document.getElementById('tbImg').addEventListener('click', function() {
+  resetImgModal();
+  switchImgTab('upload');
+  openModal('imgModal');
+});
+
+document.getElementById('imgCancel').addEventListener('click', function() {
+  closeModal('imgModal');
+  resetImgModal();
+});
+
+document.getElementById('imgInsert').addEventListener('click', function() {
+  var alt = document.getElementById('imgAlt').value.trim();
+
+  function doInsert(src) {
+    canvas.focus();
+    tbCmd('insertHTML', '<img src="' + src + '" alt="' + alt + '" style="max-width:100%;">');
+    closeModal('imgModal');
+    resetImgModal();
+  }
+
+  if (imgMode === 'upload' && imgFileData) {
+    doInsert(imgFileData);
+  } else if (imgMode === 'url') {
+    var url = document.getElementById('imgUrl').value.trim();
+    if (url) doInsert(url);
+    else showToast('Please enter an image URL');
+  } else {
+    showToast('Please select an image or enter a URL');
+  }
+});
+
+// ── PAGE MODAL ──
+document.getElementById('addPageBtn').addEventListener('click', function() { openModal('pageModal'); });
+document.getElementById('pageCancel').addEventListener('click', function() { closeModal('pageModal'); });
+document.getElementById('pageCreate').addEventListener('click', function() {
+  var name = document.getElementById('pageNameInput').value.trim();
+  if (!name) return;
+  var id = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  state.pages.push({ id: id, name: name, content: '' });
+  closeModal('pageModal');
+  document.getElementById('pageNameInput').value = '';
+  switchPage(id);
+  showToast('Page "' + name + '" created');
+});
+
+// ── PREVIEW ──
+document.getElementById('previewBtn').addEventListener('click', function() {
+  saveCurrent();
+  var html = buildExport(true);
+  var iframe = document.getElementById('previewIframe');
+  iframe.srcdoc = html;
+  openModal('previewModal');
+});
+document.getElementById('previewClose').addEventListener('click', function() { closeModal('previewModal'); });
+
+// ── EXPORT ──
+document.getElementById('exportBtn').addEventListener('click', function() {
+  saveCurrent();
+  var html = buildExport(false);
+  var blob = new Blob([html], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'site.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported as site.html');
+});
+
+// ── OPEN / IMPORT ──
+document.getElementById('openBtn').addEventListener('click', function() {
+  document.getElementById('openFileInput').click();
+});
+
+document.getElementById('openFileInput').addEventListener('change', function() {
+  var file = this.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    importHTML(e.target.result, file.name);
+  };
+  reader.readAsText(file);
+  this.value = ''; // reset so same file can be re-opened
+});
+
+function importHTML(html, filename) {
+  // Parse the HTML string into a DOM
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(html, 'text/html');
+
+  // ── Try to load embedded Folio metadata (clean round-trip) ──
+  var metaEl = doc.querySelector('meta[name="folio-data"]');
+  if (metaEl) {
+    try {
+      var data = JSON.parse(metaEl.getAttribute('content'));
+
+      // Restore theme
+      if (data.theme) {
+        state.theme = Object.assign(state.theme, data.theme);
+        applyTheme();
+        syncThemeUI();
+      }
+
+      // Restore pages — re-inject block-controls since they were stripped on export
+      if (data.pages && data.pages.length) {
+        state.pages = data.pages.map(function(p) {
+          return { id: p.id, name: p.name, content: rehydrateBlocks(p.content) };
+        });
+        state.activePage = state.pages[0].id;
+        canvas.innerHTML = state.pages[0].content;
+        renderPageTabs();
+        renderPageList();
+        applyTheme();
+        clearSelection();
+        showToast('Opened "' + (filename || 'file') + '" — ' + state.pages.length + ' page(s) loaded');
+      }
+      return;
+    } catch(err) {
+      // Fall through to best-effort import
+    }
+  }
+
+  // ── Best-effort import for any HTML file ──
+  // Grab each .site-page section if multi-page, else grab body content
+  var siteSections = doc.querySelectorAll('.site-page');
+  var importedPages = [];
+
+  if (siteSections.length > 0) {
+    siteSections.forEach(function(section) {
+      var id = section.id.replace('page-', '') || ('page' + Date.now());
+      var name = id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ');
+      importedPages.push({ id: id, name: name, content: rehydrateBlocks(section.innerHTML) });
+    });
+  } else {
+    // Single page — take everything inside body, strip nav/script/style
+    var body = doc.body;
+    body.querySelectorAll('script, style, nav.site-nav').forEach(function(el) { el.remove(); });
+    importedPages.push({ id: 'home', name: 'Home', content: rehydrateBlocks(body.innerHTML) });
+  }
+
+  // Try to recover theme from inline body styles
+  var bodyStyle = doc.body.getAttribute('style') || '';
+  var bgMatch = bodyStyle.match(/background:\s*([^;]+)/);
+  var colorMatch = bodyStyle.match(/color:\s*([^;]+)/);
+  if (bgMatch) state.theme.bg = bgMatch[1].trim();
+  if (colorMatch) state.theme.color = colorMatch[1].trim();
+
+  // Try to recover from CSS in <style> tags
+  var styleText = Array.from(doc.querySelectorAll('style')).map(function(s) { return s.textContent; }).join('\n');
+  var bodyBgMatch = styleText.match(/body\s*\{[^}]*background:\s*([^;}\n]+)/);
+  var bodyColorMatch = styleText.match(/body\s*\{[^}]*color:\s*([^;}\n]+)/);
+  var bodyFontMatch = styleText.match(/body\s*\{[^}]*font-family:\s*([^;}\n]+)/);
+  if (bodyBgMatch) state.theme.bg = bodyBgMatch[1].trim();
+  if (bodyColorMatch) state.theme.color = bodyColorMatch[1].trim();
+  if (bodyFontMatch) state.theme.font = bodyFontMatch[1].trim();
+
+  state.pages = importedPages;
+  state.activePage = importedPages[0].id;
+  canvas.innerHTML = importedPages[0].content;
+  renderPageTabs();
+  renderPageList();
+  applyTheme();
+  syncThemeUI();
+  clearSelection();
+  showToast('Imported "' + (filename || 'file') + '" — ' + importedPages.length + ' page(s) loaded');
+}
+
+// Re-add block-controls markup to blocks that had them stripped on export
+function rehydrateBlocks(html) {
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  div.querySelectorAll('[data-block]').forEach(function(block) {
+    var type = block.getAttribute('data-block');
+    var nonEditable = ['image', 'divider', 'spacer', 'cols2', 'cols3', 'postcardgrid', 'photocaption'];
+    if (nonEditable.indexOf(type) === -1) {
+      block.setAttribute('contenteditable', 'true');
+    }
+    // photocaption grid: restore item controls and contenteditable
+    if (type === 'photocaption') {
+      block.querySelectorAll('.photocaption-item').forEach(function(pi) {
+        var pcl = pi.querySelector('.photocaption-link');
+        if (pcl) pcl.setAttribute('contenteditable', 'true');
+        if (!pi.querySelector('.photocaption-item-controls')) {
+          pi.insertAdjacentHTML('beforeend',
+            '<div class="photocaption-item-controls"><button class="pci-btn" data-action="edit-photo">✏ Edit</button><button class="pci-btn pci-del" data-action="delete-photo">✕</button></div>');
+        }
+      });
+      if (!block.querySelector('.photocaption-grid-footer')) {
+        block.insertAdjacentHTML('beforeend',
+          '<div class="photocaption-grid-footer"><button class="add-photo-btn" data-action="add-photo">+ Add Photo</button></div>');
+      }
+    }
+    // postcardgrid: restore per-card controls and editable titles
+    if (type === 'postcardgrid') {
+      block.querySelectorAll('.postcard-item').forEach(function(card) {
+        var t = card.querySelector('.postcard-title');
+        if (t) t.setAttribute('contenteditable', 'true');
+        if (!card.querySelector('.postcard-item-controls')) {
+          card.insertAdjacentHTML('beforeend',
+            '<div class="postcard-item-controls">' +
+              '<button class="pci-btn" data-action="edit-post">✏ Edit</button>' +
+              '<button class="pci-btn pci-del" data-action="delete-card">✕</button>' +
+            '</div>');
+        }
+      });
+      if (!block.querySelector('.postcard-grid-footer')) {
+        block.insertAdjacentHTML('beforeend',
+          '<div class="postcard-grid-footer"><button class="add-card-btn" data-action="add-card">+ Add Post Card</button></div>');
+      }
+    }
+    // Re-add block controls if missing
+    if (!block.querySelector('.block-controls')) {
+      block.insertAdjacentHTML('beforeend',
+        '<div class="block-controls"><button class="bc-btn" data-action="up">↑</button><button class="bc-btn" data-action="down">↓</button><button class="bc-btn" data-action="delete">✕</button></div>');
+    }
+  });
+  return div.innerHTML;
+}
+
+// Sync theme panel UI controls to match loaded state.theme
+function syncThemeUI() {
+  var t = state.theme;
+
+  // Background swatches
+  document.querySelectorAll('[data-target="bg"]').forEach(function(s) {
+    s.classList.toggle('active', s.getAttribute('data-color') === t.bg);
+  });
+  var bgC = document.getElementById('bgCustom');
+  if (bgC) { try { bgC.value = t.bg; } catch(e){} }
+
+  // Text swatches
+  document.querySelectorAll('[data-target="text"]').forEach(function(s) {
+    s.classList.toggle('active', s.getAttribute('data-color') === t.color);
+  });
+  var txC = document.getElementById('textCustom');
+  if (txC) { try { txC.value = t.color; } catch(e){} }
+
+  // Font select
+  var fs = document.getElementById('fontSelect');
+  if (fs) fs.value = t.font;
+
+  // Width
+  var ws = document.getElementById('widthSelect');
+  if (ws) ws.value = t.maxWidth;
+
+  // Ranges
+  var fsR = document.getElementById('fontSizeRange');
+  var fsV = document.getElementById('fontSizeVal');
+  if (fsR && t.fontSize) { fsR.value = parseInt(t.fontSize); if(fsV) fsV.textContent = t.fontSize; }
+
+  var lhR = document.getElementById('lineHeightRange');
+  var lhV = document.getElementById('lineHeightVal');
+  if (lhR && t.lineHeight) { lhR.value = parseFloat(t.lineHeight); if(lhV) lhV.textContent = t.lineHeight; }
+
+  var pR = document.getElementById('paddingRange');
+  var pV = document.getElementById('paddingVal');
+  if (pR && t.padding) { pR.value = parseInt(t.padding); if(pV) pV.textContent = t.padding; }
+}
+function buildExport(isPreview) {
+  var t = state.theme;
+
+  // Build nav links for multi-page
+  var navLinks = state.pages.map(function(p, i) {
+    return '<a href="' + (i === 0 ? '#' : '#page-' + p.id) + '" onclick="showPage(\'' + p.id + '\');return false;">' + p.name + '</a>';
+  }).join('\n      ');
+
+  // Embed page content (with editor UI stripped) into metadata for round-trip import
+  var exportPages = state.pages.map(function(p) {
+    var div = document.createElement('div');
+    div.innerHTML = p.content;
+    div.querySelectorAll('.block-controls, .postcard-item-controls, .postcard-grid-footer, .photocaption-item-controls, .photocaption-grid-footer').forEach(function(el) { el.remove(); });
+    div.querySelectorAll('[data-block]').forEach(function(b) { b.classList.remove('selected'); });
+    div.querySelectorAll('[contenteditable]').forEach(function(el) { el.removeAttribute('contenteditable'); });
+    return { id: p.id, name: p.name, content: div.innerHTML };
+  });
+
+  // Build page sections from cleaned exportPages
+  var sections = exportPages.map(function(p) {
+    return '<section id="page-' + p.id + '" class="site-page">' + p.content + '</section>';
+  }).join('\n');
+  var folioMeta = JSON.stringify({ theme: state.theme, pages: exportPages });
+
+  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n' +
+    '<meta charset="UTF-8">\n' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+    '<meta name="folio-data" content=\'' + folioMeta.replace(/'/g, '&#39;') + '\'>\n' +
+    '<title>' + (state.pages[0] ? state.pages[0].name : 'My Site') + '</title>\n' +
+    (t.font.includes('Playfair') ? '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">\n' : '') +
+    (t.font.includes('DM Sans') ? '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">\n' : '') +
+    (t.font.includes('Syne') ? '<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">\n' : '') +
+    '<style>\n' +
+    '*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }\n' +
+    'body { font-family:' + t.font + '; background:' + t.bg + '; color:' + t.color + '; font-size:' + t.fontSize + '; line-height:' + t.lineHeight + '; }\n' +
+    '.site-nav { display:flex; align-items:center; justify-content:space-between; padding:1rem 2rem; border-bottom:1px solid rgba(128,128,128,0.2); }\n' +
+    '.site-nav a { color:inherit; text-decoration:none; font-weight:500; cursor:pointer; }\n' +
+    '.site-nav .nav-links { display:flex; gap:2rem; }\n' +
+    '.site-page { display:none; }\n' +
+    '.site-page.active { display:block; }\n' +
+    '.content-wrap { max-width:' + t.maxWidth + '; margin:0 auto; padding:' + t.padding + '; }\n' +
+    'h1 { font-size:2.4em; font-weight:700; line-height:1.15; margin-bottom:0.5rem; }\n' +
+    'h2 { font-size:1.8em; font-weight:600; line-height:1.2; margin-bottom:0.5rem; }\n' +
+    'h3 { font-size:1.3em; font-weight:600; margin-bottom:0.4rem; }\n' +
+    'p { margin-bottom:1rem; }\n' +
+    'ul, ol { margin-left:1.5rem; margin-bottom:1rem; }\n' +
+    'img { max-width:100%; border-radius:4px; display:block; }\n' +
+    'hr { border:none; border-top:1px solid rgba(128,128,128,0.2); margin:1.5rem 0; }\n' +
+    'blockquote { border-left:3px solid currentColor; padding-left:1rem; font-style:italic; margin:1rem 0; opacity:0.75; }\n' +
+    'a { color:inherit; }\n' +
+    '.hero-block { padding:4rem 2rem; text-align:center; }\n' +
+    '.hero-block h1 { font-size:3em; margin-bottom:0.75rem; }\n' +
+    '.hero-block p { font-size:1.15em; opacity:0.75; max-width:560px; margin:0 auto 1.5rem; }\n' +
+    '.hero-btn { display:inline-block; padding:0.75rem 2rem; background:currentColor; border-radius:4px; font-weight:600; text-decoration:none; }\n' +
+    '.cols-block { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }\n' +
+    '.cols-block-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem; }\n' +
+    '.card-block { border:1px solid rgba(128,128,128,0.2); border-radius:8px; padding:1.5rem; }\n' +
+    '.nav-block { display:flex; align-items:center; justify-content:space-between; padding:1rem 0; border-bottom:1px solid rgba(128,128,128,0.2); margin-bottom:1rem; }\n' +
+    '.nav-block .nav-logo { font-weight:700; font-size:1.1em; }\n' +
+    '.nav-block .nav-links { display:flex; gap:1.5rem; font-size:0.9em; opacity:0.7; }\n' +
+    '.footer-block { padding:2rem 0; border-top:1px solid rgba(128,128,128,0.2); margin-top:1rem; text-align:center; opacity:0.6; font-size:0.9em; }\n' +
+    '.spacer-block { height:3rem; }\n' +
+    '.postcard-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }\n' +
+    '.postcard-item { border-radius:6px; overflow:hidden; cursor:pointer; transition:box-shadow 0.2s; background:transparent; }\n' +
+    '.postcard-item:hover { box-shadow:0 4px 20px rgba(0,0,0,0.12); }\n' +
+    '.postcard-img-wrap { position:relative; overflow:hidden; aspect-ratio:4/3; border-radius:6px 6px 0 0; }\n' +
+    '.postcard-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s ease; }\n' +
+    '.postcard-item:hover .postcard-img { transform:scale(1.04); }\n' +
+    '.photocaption-grid-block { }\n' +
+    '.photocaption-grid { display:grid; grid-template-columns:repeat(3,260px); gap:1.25rem; }\n' +
+    '.photocaption-item { position:relative; }\n' +
+    '.photocaption-img-wrap { overflow:hidden; border-radius:6px; width:260px; height:380px; }\n' +
+    '.photocaption-img { width:100%; height:100%; display:block; object-fit:cover; transition:transform 0.3s ease; }\n' +
+    '.photocaption-item:hover .photocaption-img { transform:scale(1.04); }\n' +
+    '.photocaption-meta { padding:0.3rem 0 0; }\n' +
+    '.photocaption-link { font-size:0.85em; color:inherit; text-decoration:none; opacity:0.65; border-bottom:1px solid currentColor; transition:opacity 0.15s; display:inline-block; }\n' +
+    '.photocaption-link:hover { opacity:1; }\n' +
+    '@media (max-width:768px) { .photocaption-grid { grid-template-columns:repeat(2,1fr); } }\n' +
+    '@media (max-width:480px) { .photocaption-grid { grid-template-columns:1fr; } }\n' +
+    '.postcard-meta { padding:0.5rem 0 0; background:transparent; }\n' +
+    '.postcard-title { font-size:0.88em; font-weight:600; line-height:1.3; }\n' +
+    '.postcard-content { display:none; }\n' +
+    '.postcard-grid-footer { display:none; }\n' +
+    '@media (max-width:768px) { .postcard-grid { grid-template-columns:repeat(2,1fr); } }\n' +
+    '@media (max-width:480px) { .postcard-grid { grid-template-columns:1fr; } }\n' +
+    '.pr-modal { display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); align-items:flex-start; justify-content:center; padding:2rem 1rem; overflow-y:auto; }\n' +
+    '.pr-modal.open { display:flex; }\n' +
+    '.pr-inner { background:#fff; border-radius:10px; width:100%; max-width:720px; box-shadow:0 24px 80px rgba(0,0,0,0.3); margin:auto; position:relative; overflow:hidden; }\n' +
+    '.pr-hero { width:100%; aspect-ratio:16/6; object-fit:cover; display:block; }\n' +
+    '.pr-body { padding:2.5rem 3rem 3rem; font-family:inherit; }\n' +
+    '.pr-title { font-size:2rem; font-weight:700; line-height:1.2; margin-bottom:1.5rem; }\n' +
+    '.pr-content { font-size:1.05rem; line-height:1.85; color:#333; }\n' +
+    '.pr-content p { margin-bottom:1rem; }\n' +
+    '.pr-content h2 { font-size:1.4rem; font-weight:700; margin:2rem 0 0.75rem; }\n' +
+    '.pr-content h3 { font-size:1.15rem; font-weight:600; margin:1.5rem 0 0.5rem; }\n' +
+    '.pr-content blockquote { border-left:3px solid #c9a96e; padding-left:1rem; font-style:italic; margin:1.5rem 0; color:#666; }\n' +
+    '.pr-content ul, .pr-content ol { margin-left:1.5rem; margin-bottom:1rem; }\n' +
+    '.pr-close { position:absolute; top:0.75rem; right:0.75rem; width:32px; height:32px; border-radius:50%; background:rgba(0,0,0,0.5); border:none; color:#fff; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:20; }\n' +
+    '@media (max-width:640px) { .cols-block, .cols-block-3 { grid-template-columns:1fr; } .pr-body { padding:1.5rem; } .pr-title { font-size:1.5rem; } }\n' +
+    '</style>\n</head>\n<body>\n' +
+    (state.pages.length > 1 ? '<nav class="site-nav"><div class="nav-links">' + navLinks + '</div></nav>\n' : '') +
+    '<div class="content-wrap">\n' + sections + '\n</div>\n' +
+    '<!-- POST READER MODAL -->\n' +
+    '<div class="pr-modal" id="exportPostModal">\n' +
+    '  <div class="pr-inner" id="exportPostInner">\n' +
+    '    <button class="pr-close" onclick="closeExportPost()">&#215;</button>\n' +
+    '    <img class="pr-hero" id="exportPostHero" src="" alt="" style="display:none;">\n' +
+    '    <div class="pr-body" id="exportPostBody">\n' +
+    '      <div class="pr-title" id="exportPostTitle2"></div>\n' +
+    '      <div class="pr-content" id="exportPostContent"></div>\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    '</div>\n' +
+    '<script>\n' +
+    '(function(){\n' +
+    '  var pages = ' + JSON.stringify(state.pages.map(function(p) { return p.id; })) + ';\n' +
+    '  function showPage(id) {\n' +
+    '    document.querySelectorAll(".site-page").forEach(function(p){p.classList.remove("active");});\n' +
+    '    var el = document.getElementById("page-"+id);\n' +
+    '    if(el) el.classList.add("active");\n' +
+    '    window.location.hash = id;\n' +
+    '  }\n' +
+    '  window.showPage = showPage;\n' +
+    '  var hash = window.location.hash.replace("#","") || pages[0];\n' +
+    '  showPage(hash);\n' +
+    '  // Post card click handler\n' +
+    '  document.addEventListener("click", function(e) {\n' +
+    '    if (e.target.closest(".photocaption-link")) return; // let link navigate\n' +
+    '    var overlay = e.target.closest(".postcard-img-wrap");\n' +
+    '    if (overlay) {\n' +
+    '      var card = overlay.closest(".postcard-item");\n' +
+    '      if (!card) return;\n' +
+    '      var img = card.querySelector(".postcard-img");\n' +
+    '      var title = card.querySelector(".postcard-title");\n' +
+    '      var body = card.querySelector(".postcard-content");\n' +
+    '      var hero = document.getElementById("exportPostHero");\n' +
+    '      if (img && img.src) { hero.src = img.src; hero.style.display = "block"; } else { hero.style.display = "none"; }\n' +
+    '      document.getElementById("exportPostTitle2").textContent = title ? title.textContent : "";\n' +
+    '      document.getElementById("exportPostContent").innerHTML = body ? body.innerHTML : "";\n' +
+    '      var modalBg = body ? (body.getAttribute("data-modal-bg") || "#ffffff") : "#ffffff";\n' +
+    '      var modalColor = body ? (body.getAttribute("data-modal-color") || "#333") : "#333";\n' +
+    '      document.getElementById("exportPostInner").style.background = modalBg;\n' +
+    '      document.getElementById("exportPostBody").style.color = modalColor;\n' +
+    '      document.getElementById("exportPostTitle2").style.color = modalColor;\n' +
+    '      document.getElementById("exportPostModal").classList.add("open");\n' +
+    '      document.body.style.overflow = "hidden";\n' +
+    '    }\n' +
+    '  });\n' +
+    '  window.closeExportPost = function() {\n' +
+    '    document.getElementById("exportPostModal").classList.remove("open");\n' +
+    '    document.body.style.overflow = "";\n' +
+    '  };\n' +
+    '  document.getElementById("exportPostModal").addEventListener("click", function(e) {\n' +
+    '    if (e.target === this) closeExportPost();\n' +
+    '  });\n' +
+    '})();\n' +
+    '<\/script>\n</body>\n</html>';
+}
+
+// ── MODAL HELPERS ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+  overlay.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+});
+
+// ── TOAST ──
+var toastTimer;
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 2200);
+}
+
+// ── POST READER ──
+var currentPostBlock = null;
+
+function openPostReader(cardItem) {
+  currentPostBlock = cardItem;
+  var img = cardItem.querySelector('.postcard-img');
+  var titleEl = cardItem.querySelector('.postcard-title');
+  var contentEl = cardItem.querySelector('.postcard-content');
+
+  // Populate reader
+  var heroImg = document.getElementById('postReaderHero');
+  if (img && img.src) {
+    heroImg.src = img.src;
+    heroImg.style.display = 'block';
+  } else {
+    heroImg.style.display = 'none';
+  }
+
+  document.getElementById('postReaderTitle').textContent = titleEl ? titleEl.textContent : '';
+  document.getElementById('postReaderContent').innerHTML = contentEl ? contentEl.innerHTML : '<p>Start writing your article here…</p>';
+
+  // Load stored colors
+  var storedBg = contentEl ? (contentEl.getAttribute('data-modal-bg') || '#ffffff') : '#ffffff';
+  var storedColor = contentEl ? (contentEl.getAttribute('data-modal-color') || '#1a1814') : '#1a1814';
+  document.getElementById('prCustomBg').value = storedBg;
+  document.getElementById('prCustomText').value = storedColor;
+  // Highlight matching swatch if any
+  document.querySelectorAll('.pr-theme-swatch').forEach(function(s) {
+    s.classList.remove('active'); s.style.borderColor = 'transparent';
+    if (s.getAttribute('data-bg') === storedBg && s.getAttribute('data-color') === storedColor) {
+      s.classList.add('active'); s.style.borderColor = '#2563eb';
+    }
+  });
+  applyReaderColors(storedBg, storedColor);
+
+  document.getElementById('postReaderModal').classList.add('open');
+  document.getElementById('postReaderContent').focus();
+}
+
+function closePostReader() {
+  if (!currentPostBlock) return;
+  // Save title back to card
+  var newTitle = document.getElementById('postReaderTitle').textContent.trim();
+  var newContent = document.getElementById('postReaderContent').innerHTML;
+
+  var titleEl = currentPostBlock.querySelector('.postcard-title');
+  if (titleEl) titleEl.textContent = newTitle || 'Post Title';
+
+  var contentEl = currentPostBlock.querySelector('.postcard-content');
+  if (contentEl) {
+    contentEl.innerHTML = newContent;
+    contentEl.setAttribute('data-modal-bg', document.getElementById('prCustomBg').value);
+    contentEl.setAttribute('data-modal-color', document.getElementById('prCustomText').value);
+  }
+
+  saveCurrent();
+  document.getElementById('postReaderModal').classList.remove('open');
+  currentPostBlock = null;
+  showToast('Article saved');
+}
+
+document.getElementById('postReaderClose').addEventListener('click', closePostReader);
+document.getElementById('postReaderModal').addEventListener('click', function(e) {
+  if (e.target === this) closePostReader();
+});
+
+// Reader toolbar
+function prCmd(cmd, val) {
+  document.getElementById('postReaderContent').focus();
+  document.execCommand(cmd, false, val || null);
+}
+document.getElementById('prBold').addEventListener('click', function() { prCmd('bold'); });
+document.getElementById('prItalic').addEventListener('click', function() { prCmd('italic'); });
+document.getElementById('prUnderline').addEventListener('click', function() { prCmd('underline'); });
+document.getElementById('prH2').addEventListener('click', function() { prCmd('formatBlock', '<h2>'); });
+document.getElementById('prH3').addEventListener('click', function() { prCmd('formatBlock', '<h3>'); });
+document.getElementById('prQuote').addEventListener('click', function() { prCmd('formatBlock', '<blockquote>'); });
+document.getElementById('prUL').addEventListener('click', function() { prCmd('insertUnorderedList'); });
+document.getElementById('prOL').addEventListener('click', function() { prCmd('insertOrderedList'); });
+document.getElementById('prUndo').addEventListener('click', function() { prCmd('undo'); });
+document.getElementById('prRedo').addEventListener('click', function() { prCmd('redo'); });
+
+function applyReaderColors(bg, color) {
+  var inner = document.getElementById('postReaderInner');
+  var body = document.getElementById('postReaderBody');
+  var title = document.getElementById('postReaderTitle');
+  inner.style.background = bg;
+  body.style.color = color;
+  title.style.color = color;
+  // Toolbar stays light regardless
+}
+
+// Swatch clicks
+document.querySelectorAll('.pr-theme-swatch').forEach(function(sw) {
+  sw.addEventListener('click', function() {
+    document.querySelectorAll('.pr-theme-swatch').forEach(function(s) { s.classList.remove('active'); s.style.borderColor = 'transparent'; });
+    sw.classList.add('active');
+    var bg = sw.getAttribute('data-bg');
+    var col = sw.getAttribute('data-color');
+    document.getElementById('prCustomBg').value = bg;
+    document.getElementById('prCustomText').value = col;
+    applyReaderColors(bg, col);
+  });
+});
+// Custom pickers
+document.getElementById('prCustomBg').addEventListener('input', function() {
+  document.querySelectorAll('.pr-theme-swatch').forEach(function(s) { s.classList.remove('active'); s.style.borderColor = 'transparent'; });
+  applyReaderColors(this.value, document.getElementById('prCustomText').value);
+});
+document.getElementById('prCustomText').addEventListener('input', function() {
+  document.querySelectorAll('.pr-theme-swatch').forEach(function(s) { s.classList.remove('active'); s.style.borderColor = 'transparent'; });
+  applyReaderColors(document.getElementById('prCustomBg').value, this.value);
+});
+
+// Cover image change
+document.getElementById('prImgBtn').addEventListener('click', function() {
+  document.getElementById('prImgFile').click();
+});
+document.getElementById('prImgFile').addEventListener('change', function() {
+  var file = this.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var heroImg = document.getElementById('postReaderHero');
+    heroImg.src = e.target.result;
+    heroImg.style.display = 'block';
+    // Also update the postcard thumbnail
+    if (currentPostBlock) {
+      var thumb = currentPostBlock.querySelector('.postcard-img');
+      if (thumb) thumb.src = e.target.result;
+    }
+  };
+  reader.readAsDataURL(file);
+  this.value = '';
+});
+
+// Autosave badge
+var prSaveTimer;
+document.getElementById('postReaderContent').addEventListener('input', function() {
+  document.getElementById('postReaderSaveBadge').textContent = 'Unsaved changes…';
+  clearTimeout(prSaveTimer);
+  prSaveTimer = setTimeout(function() {
+    if (currentPostBlock) {
+      var contentEl = currentPostBlock.querySelector('.postcard-content');
+      if (contentEl) contentEl.innerHTML = document.getElementById('postReaderContent').innerHTML;
+      saveCurrent();
+      document.getElementById('postReaderSaveBadge').textContent = 'Changes saved automatically';
+    }
+  }, 800);
+});
+document.getElementById('postReaderTitle').addEventListener('input', function() {
+  if (currentPostBlock) {
+    var titleEl = currentPostBlock.querySelector('.postcard-title');
+    if (titleEl) titleEl.textContent = this.textContent;
+  }
+});
+
+// ── PHOTO EDITOR ──
+function openPhotoEditor(item) {
+  var img = item.querySelector('.photocaption-img');
+  var link = item.querySelector('.photocaption-link');
+  var html = '<div class="prop-row"><span class="prop-label">Caption Text</span>' +
+    '<input class="prop-input" id="propCaptionText" value="' + (link ? link.textContent.trim() : '') + '"></div>';
+  html += '<div class="prop-row"><span class="prop-label">Link URL</span>' +
+    '<input class="prop-input" id="propCaptionUrl" value="' + (link ? (link.getAttribute('data-href') || '#') : '#') + '" placeholder="https://"></div>';
+  html += '<div class="prop-row"><span class="prop-label">Open in</span>' +
+    '<select class="prop-input" id="propCaptionTarget"><option value="_self">Same tab</option><option value="_blank">New tab</option></select></div>';
+  html += '<div class="prop-row"><span class="prop-label">Replace Image</span>' +
+    '<button class="prop-input" id="propPcUploadBtn" style="cursor:pointer;text-align:left;background:var(--bg);color:var(--muted);font-size:0.8rem;">Upload from computer</button>' +
+    '<input type="file" id="propPcImgFile" accept="image/*" style="display:none;"></div>';
+  html += '<div class="prop-row"><span class="prop-label">Or Image URL</span>' +
+    '<input class="prop-input" id="propPcImgSrc" placeholder="https://" value="' + (img && !img.src.startsWith('data:') ? img.src : '') + '"></div>';
+  propsBody.innerHTML = html;
+  var ct = document.getElementById('propCaptionText');
+  if (ct) ct.addEventListener('input', function() { if (link) link.textContent = this.value; });
+  var cu = document.getElementById('propCaptionUrl');
+  if (cu) cu.addEventListener('change', function() { if (link) { link.setAttribute('data-href', this.value); link.setAttribute('href', this.value); } });
+  var ctg = document.getElementById('propCaptionTarget');
+  if (ctg) { if (link) ctg.value = link.getAttribute('target') || '_self'; ctg.addEventListener('change', function() { if (link) link.setAttribute('target', this.value); }); }
+  var ub = document.getElementById('propPcUploadBtn'), fi = document.getElementById('propPcImgFile');
+  if (ub && fi) { ub.addEventListener('click', function() { fi.click(); }); fi.addEventListener('change', function() { var f=this.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(e){if(img){img.src=e.target.result; ub.textContent='Done: '+f.name; ub.style.color='var(--green)';}};r.readAsDataURL(f); }); }
+  var si = document.getElementById('propPcImgSrc');
+  if (si) si.addEventListener('change', function() { if (img) img.src = this.value; });
+}
+
+// ── AUTOSAVE ──
+canvas.addEventListener('input', function() {
+  clearTimeout(canvas._saveTimer);
+  canvas._saveTimer = setTimeout(saveCurrent, 600);
+});
+
+// ── INIT ──
+applyTheme();
+renderPageTabs();
+renderPageList();
+// Set first page active
+if (state.pages.length > 0) {
+  document.getElementById('page-' + state.activePage) || null;
+}
+showToast('Welcome to Folio — click a block to begin');
+
+})();
+</script>
+</body>
+</html>.page-tab {
+  font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:600; letter-spacing:0.04em;
+  padding:0.35rem 0.85rem; border-radius:4px; border:1px solid transparent;
+  cursor:pointer; background:none; color:var(--muted); transition:all 0.15s; white-space:nowrap;
+}
+.page-tab:hover { color:var(--text); background:var(--panel2); }
+.page-tab.active { background:var(--accent); color:var(--accent-inv); border-color:var(--accent); }
+.page-tab-add {
+  width:28px; height:28px; border-radius:4px; border:1px dashed var(--border);
+  background:none; cursor:pointer; color:var(--muted); font-size:1rem; display:flex; align-items:center; justify-content:center; transition:all 0.15s;
+}
+.page-tab-add:hover { border-color:var(--accent); color:var(--accent); }
+.topbar-right { display:flex; align-items:center; gap:0.5rem; }
+.btn-sm {
+  font-family:'Syne',sans-serif; font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+  padding:0.4rem 1rem; border-radius:4px; border:1px solid var(--border); background:none; cursor:pointer; color:var(--muted); transition:all 0.15s;
+}
+.btn-sm:hover { color:var(--text); border-color:var(--text); }
+.btn-primary {
+  background:var(--accent); color:var(--accent-inv); border-color:var(--accent);
+}
+.btn-primary:hover { background:#333; color:#fff; border-color:#333; }
+
+/* ── LAYOUT ── */
+#workspace { display:flex; flex:1; overflow:hidden; }
+
+/* ── LEFT SIDEBAR ── */
+#sidebar {
+  width:var(--sidebar-w); background:var(--panel); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; overflow:hidden; flex-shrink:0;
+}
+.sidebar-tabs { display:flex; border-bottom:1px solid var(--border); }
+.stab {
+  flex:1; padding:0.6rem 0; font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase; text-align:center; cursor:pointer;
+  border:none; background:none; color:var(--muted); border-bottom:2px solid transparent; transition:all 0.15s;
+}
+.stab.active { color:var(--text); border-bottom-color:var(--text); }
+.sidebar-panel { flex:1; overflow-y:auto; padding:1rem; display:none; }
+.sidebar-panel.active { display:block; }
+
+/* ── BLOCKS ── */
+.block-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+.block-item {
+  border:1px solid var(--border); border-radius:6px; padding:0.75rem 0.5rem; text-align:center;
+  cursor:grab; background:var(--panel); transition:all 0.15s; user-select:none;
+}
+.block-item:hover { border-color:var(--accent); background:var(--panel2); }
+.block-item:active { cursor:grabbing; }
+.block-icon { font-size:1.3rem; margin-bottom:0.25rem; }
+.block-label { font-size:0.68rem; font-weight:500; color:var(--muted); }
+
+/* ── THEME PANEL ── */
+.theme-section { margin-bottom:1.5rem; }
+.theme-label { font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem; display:block; }
+.color-row { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.5rem; }
+.color-swatch {
+  width:28px; height:28px; border-radius:50%; cursor:pointer; border:2px solid transparent;
+  transition:transform 0.15s; flex-shrink:0;
+}
+.color-swatch:hover { transform:scale(1.15); }
+.color-swatch.active { border-color:var(--text); }
+.color-custom { display:flex; align-items:center; gap:0.4rem; margin-top:0.4rem; }
+.color-custom input[type=color] { width:28px; height:28px; border:1px solid var(--border); border-radius:4px; padding:1px; cursor:pointer; background:none; }
+.color-custom label { font-size:0.75rem; color:var(--muted); }
+.font-select, .range-input, .select-input {
+  width:100%; padding:0.4rem 0.6rem; border:1px solid var(--border); border-radius:4px;
+  background:var(--bg); font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text); outline:none; margin-bottom:0.5rem;
+}
+.font-select:focus, .range-input:focus, .select-input:focus { border-color:var(--accent); }
+.range-row { display:flex; align-items:center; gap:0.5rem; }
+.range-row input[type=range] { flex:1; accent-color:var(--accent); }
+.range-val { font-size:0.75rem; color:var(--muted); min-width:32px; text-align:right; }
+
+/* ── PAGES PANEL ── */
+.page-item {
+  display:flex; align-items:center; justify-content:space-between; padding:0.5rem 0.6rem;
+  border-radius:4px; cursor:pointer; transition:background 0.15s; margin-bottom:0.25rem;
+}
+.page-item:hover { background:var(--panel2); }
+.page-item.active { background:var(--panel2); font-weight:500; }
+.page-item-name { font-size:0.85rem; flex:1; }
+.page-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:0.1rem 0.3rem; border-radius:3px; transition:color 0.15s; }
+.page-del:hover { color:var(--red); }
+.add-page-btn {
+  width:100%; padding:0.5rem; border:1px dashed var(--border); border-radius:4px; background:none;
+  color:var(--muted); font-size:0.8rem; cursor:pointer; transition:all 0.15s; margin-top:0.5rem;
+}
+.add-page-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+/* ── TOOLBAR ── */
+#toolbar {
+  height:var(--toolbar-h); background:var(--panel); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; padding:0 1rem; gap:0.25rem; flex-shrink:0; flex-wrap:wrap;
+}
+.tb-btn {
+  height:32px; min-width:32px; padding:0 0.5rem; border-radius:4px; border:1px solid transparent;
+  background:none; cursor:pointer; color:var(--text); font-size:0.85rem; display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s; font-family:'DM Sans',sans-serif; gap:0.3rem;
+}
+.tb-btn:hover { background:var(--panel2); border-color:var(--border); }
+.tb-btn.active { background:var(--accent); color:var(--accent-inv); }
+.tb-sep { width:1px; height:22px; background:var(--border); margin:0 0.25rem; flex-shrink:0; }
+.tb-select {
+  height:32px; padding:0 0.5rem; border:1px solid var(--border); border-radius:4px;
+  background:var(--bg); font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text); outline:none; cursor:pointer;
+}
+.tb-select:focus { border-color:var(--accent); }
+.tb-color { width:32px; height:32px; padding:3px; border:1px solid var(--border); border-radius:4px; cursor:pointer; background:var(--bg); }
+
+/* ── CANVAS AREA ── */
+#canvas-wrap {
+  flex:1; overflow:auto; background:var(--bg); display:flex; align-items:flex-start; justify-content:center;
+  padding:2rem;
+}
+#canvas-container { display:flex; flex-direction:column; height:100%; width:100%; }
+#toolbar-wrap { flex-shrink:0; }
+
+/* ── PREVIEW FRAME ── */
+#preview-frame {
+  width:100%; max-width:900px; margin:0 auto; background:#fff; border-radius:8px;
+  box-shadow:0 4px 40px rgba(0,0,0,0.12); min-height:600px; overflow:hidden; position:relative;
+}
+#canvas {
+  min-height:600px; outline:none; padding:2rem;
+  font-family:var(--cf, 'Georgia, serif'); color:var(--cc, #1a1814);
+  background:var(--cbg, #ffffff); line-height:1.7;
+}
+#canvas:empty::before { content:'Click blocks on the left to start building your page…'; color:#aaa; font-style:italic; }
+
+/* Canvas element selection */
+#canvas [data-block] { position:relative; cursor:default; outline:2px solid transparent; transition:outline 0.15s; margin-bottom:0.5rem; }
+#canvas [data-block]:hover { outline:2px solid rgba(37,99,235,0.4); }
+#canvas [data-block].selected { outline:2px solid var(--blue); }
+#canvas [data-block] .block-controls {
+  display:none; position:absolute; top:-1px; right:-1px; background:var(--blue); border-radius:0 4px 0 4px;
+  gap:2px; padding:2px;
+}
+#canvas [data-block].selected .block-controls { display:flex; }
+.bc-btn {
+  width:22px; height:22px; border:none; background:none; cursor:pointer; color:#fff;
+  font-size:0.75rem; border-radius:2px; display:flex; align-items:center; justify-content:center; transition:background 0.1s;
+}
+.bc-btn:hover { background:rgba(255,255,255,0.2); }
+
+/* ── CANVAS BLOCK STYLES ── */
+#canvas h1 { font-size:2.4em; font-weight:700; line-height:1.15; margin-bottom:0.5rem; }
+#canvas h2 { font-size:1.8em; font-weight:600; line-height:1.2; margin-bottom:0.5rem; }
+#canvas h3 { font-size:1.3em; font-weight:600; margin-bottom:0.4rem; }
+#canvas p { margin-bottom:1rem; }
+#canvas ul, #canvas ol { margin-left:1.5rem; margin-bottom:1rem; }
+#canvas img { max-width:100%; border-radius:4px; display:block; }
+#canvas hr { border:none; border-top:1px solid #e0dbd2; margin:1.5rem 0; }
+#canvas blockquote { border-left:3px solid currentColor; padding-left:1rem; font-style:italic; margin:1rem 0; opacity:0.75; }
+#canvas .hero-block { padding:3rem 2rem; text-align:center; }
+#canvas .hero-block h1 { font-size:3em; margin-bottom:0.75rem; }
+#canvas .hero-block p { font-size:1.15em; opacity:0.75; max-width:560px; margin:0 auto 1.5rem; }
+#canvas .hero-btn { display:inline-block; padding:0.75rem 2rem; background:currentColor; border-radius:4px; font-weight:600; text-decoration:none; }
+#canvas .cols-block { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+#canvas .cols-block-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem; }
+#canvas .card-block { border:1px solid #e0dbd2; border-radius:8px; padding:1.5rem; }
+#canvas .img-block img { width:100%; }
+#canvas .divider-block hr { border-top-width:2px; }
+#canvas .spacer-block { height:3rem; }
+#canvas .nav-block { display:flex; align-items:center; justify-content:space-between; padding:1rem 0; border-bottom:1px solid #e0dbd2; margin-bottom:1rem; }
+#canvas .nav-block .nav-logo { font-weight:700; font-size:1.1em; }
+#canvas .nav-block .nav-links { display:flex; gap:1.5rem; font-size:0.9em; opacity:0.7; }
+#canvas .footer-block { padding:2rem 0; border-top:1px solid #e0dbd2; margin-top:1rem; text-align:center; opacity:0.6; font-size:0.9em; }
+
+/* ── RIGHT PROPERTIES PANEL ── */
+#props-panel {
+  width:240px; background:var(--panel); border-left:1px solid var(--border);
+  display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto;
+}
+.props-header { padding:0.75rem 1rem; border-bottom:1px solid var(--border); }
+.props-title { font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+.props-body { padding:1rem; }
+.prop-row { margin-bottom:1rem; }
+.prop-label { font-size:0.72rem; color:var(--muted); margin-bottom:0.3rem; display:block; font-weight:500; }
+.prop-input {
+  width:100%; padding:0.4rem 0.6rem; border:1px solid var(--border); border-radius:4px;
+  background:var(--bg); font-family:'DM Sans',sans-serif; font-size:0.82rem; color:var(--text); outline:none;
+}
+.prop-input:focus { border-color:var(--accent); }
+.prop-color { width:100%; height:34px; padding:2px; border:1px solid var(--border); border-radius:4px; cursor:pointer; background:none; }
+.prop-empty { padding:2rem 1rem; text-align:center; color:var(--muted); font-size:0.82rem; font-style:italic; }
+
+/* ── MODALS ── */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000;
+  align-items:center; justify-content:center; backdrop-filter:blur(4px);
+}
+.modal-overlay.open { display:flex; animation:fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal {
+  background:var(--panel); border-radius:8px; padding:1.5rem; width:90%; max-width:480px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+}
+.modal h3 { font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; margin-bottom:1rem; }
+.modal input, .modal textarea {
+  width:100%; padding:0.5rem 0.75rem; border:1px solid var(--border); border-radius:4px;
+  font-family:'DM Sans',sans-serif; font-size:0.9rem; color:var(--text); background:var(--bg); outline:none; margin-bottom:0.75rem;
+}
+.modal input:focus, .modal textarea:focus { border-color:var(--accent); }
+.modal-btns { display:flex; gap:0.5rem; justify-content:flex-end; margin-top:0.5rem; }
+
+/* ── TOAST ── */
+#toast {
+  position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(10px);
+  background:var(--accent); color:var(--accent-inv); padding:0.6rem 1.5rem; border-radius:999px;
+  font-size:0.82rem; font-weight:500; opacity:0; transition:all 0.3s; pointer-events:none; z-index:2000;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── DRAG DROP ── */
+.drop-indicator { height:3px; background:var(--blue); border-radius:2px; margin:2px 0; display:none; }
+.drop-indicator.visible { display:block; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
 </style>
 </head>
 <body>
